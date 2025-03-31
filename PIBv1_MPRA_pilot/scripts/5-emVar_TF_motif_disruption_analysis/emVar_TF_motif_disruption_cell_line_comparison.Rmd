@@ -1,0 +1,61 @@
+---
+title: "emVar_TF_motif_disruption_cell_line_comparison"
+author: "Stephen Rong"
+date: "2023-07-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, include=TRUE}
+# for data analysis
+library(tidyverse)
+library(data.table)
+library(ggpubr)
+library(ggrepel)
+library(scales)
+```
+
+```{r load and merge, include=TRUE}
+# load summ files
+all_MPRA_K562_TF_jaspar_motif_counts <- as_tibble(fread("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts.txt.gz"))
+all_MPRA_Jurkat_TF_jaspar_motif_counts <- as_tibble(fread("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_Jurkat_TF_jaspar_motif_counts.txt.gz"))
+MPRA_K562andJurkat_TF_jaspar_motifs_in_K562andJurkat_gene_sets_final <- readLines("../../results/5-emVar_TF_motif_disruption_analysis/MPRA_K562andJurkat_TF_jaspar_motifs_in_K562andJurkat_gene_sets_final.txt")
+
+all_MPRA_K562_TF_jaspar_temp <- all_MPRA_K562_TF_jaspar_motif_counts %>% 
+  dplyr::select(motif, starts_with("emVar_assayed")) %>% 
+  rename_at(vars(contains("emVar_assayed")), function(x) {paste0(x, "_K562")})
+
+all_MPRA_Jurkat_TF_jaspar_temp <- all_MPRA_Jurkat_TF_jaspar_motif_counts %>% 
+  dplyr::select(motif, starts_with("emVar_assayed")) %>% 
+  rename_at(vars(contains("emVar_assayed")), function(x) {paste0(x, "_Jurkat")})
+
+all_MPRA_TF_jaspar_temp <- full_join(all_MPRA_K562_TF_jaspar_temp, all_MPRA_Jurkat_TF_jaspar_temp)
+
+all_MPRA_TF_jaspar_temp <- all_MPRA_TF_jaspar_temp %>% 
+  mutate(emVar_assayed_fisher_signif_K562 = ifelse(motif == "CTCF", FALSE, emVar_assayed_fisher_signif_K562)) %>% 
+  mutate(emVar_assayed_fisher_signif_Jurkat = ifelse(motif == "CTCF", FALSE, emVar_assayed_fisher_signif_Jurkat))
+```
+
+```{r visualize, include=TRUE}
+ggplot(all_MPRA_TF_jaspar_temp) + 
+  geom_hline(yintercept = log2(1), color="#b9b9b9") + 
+  geom_vline(xintercept = log2(1), color="#b9b9b9") + 
+  geom_point(aes(log2(emVar_assayed_fisher_odds_ratio_K562), log2(emVar_assayed_fisher_odds_ratio_Jurkat), 
+    color=interaction(emVar_assayed_fisher_signif_K562, emVar_assayed_fisher_signif_Jurkat),
+    shape=(motif %in% MPRA_K562andJurkat_TF_jaspar_motifs_in_K562andJurkat_gene_sets_final)), 
+    data = all_MPRA_TF_jaspar_temp) + 
+  geom_text_repel(aes(log2(emVar_assayed_fisher_odds_ratio_K562), log2(emVar_assayed_fisher_odds_ratio_Jurkat), label=motif), 
+    data = filter(all_MPRA_TF_jaspar_temp, (emVar_assayed_fisher_signif_K562 | emVar_assayed_fisher_signif_Jurkat) & (motif %in% MPRA_K562andJurkat_TF_jaspar_motifs_in_K562andJurkat_gene_sets_final)), 
+    max.overlaps=Inf, size=3) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab(expression("log"["2"] ~ "Fold-Change (emVar/assayed K562)")) + 
+  ylab(expression("log"["2"] ~ "Fold-Change (emVar/assayed Jurkat)")) +
+  scale_color_manual(values = c("#b9b9b9", "#83b8d7", "#e34d34", "#fdd081"), labels = c("NS", "K562 (FDR<0.01)", "Jurkat (FDR<0.01)", "Both K562 & Jurkat"), name="") +
+  scale_shape_manual(values = c(1, 16), labels = c("Other TFs", "Immune-related TFs"), name="") +
+  scale_x_continuous(breaks=c(-4, -2, 0, 2, 4)) +
+  scale_y_continuous(breaks=c(-4, -2, 0, 2, 4))
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562andJurkat_TF_jaspar_motif_counts_emVar_cell_line_comparison_highlighted.pdf", scale=1.0)
+```

@@ -1,0 +1,12 @@
+module load R/4.2.0-foss-2020b
+salloc --mem=10G -t 4:00:00 -C oldest
+R
+library(tidyverse)
+library(data.table)
+install.packages("BiocManager")
+BiocManager::install("plyranges")
+BiocManager::install("motifbreakR")
+BiocManager::install("BSgenome.Hsapiens.UCSC.hg19")
+library(plyranges)
+library(motifbreakR)
+library(BSgenome.Hsapiens.UCSC.hg19)

@@ -1,0 +1,300 @@
+---
+title: "Introgression karyograms"
+author: "Stephen Rong"
+date: '2023-04-18'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages, include=TRUE}
+# for data analysis
+library(tidyverse)
+library(data.table)
+library(eulerr)
+
+# for bio data analysis
+library(plyranges)
+library(rtracklayer)
+library(ggbio)
+source("../shared_functions/seqinfo_fix_change.R")
+source("../shared_functions/find_overlap_map.R")
+```
+
+```{r load reduced introgressed tracts, include=TRUE}
+# load introgressed tracts (OCN)
+introgressed_reduced_OCN_and_noOCN_gr <- import("../../data/PIBv1_MPRA_final_revised/PIBv1_total_tiling_paths_maxgap0.bed") %>% 
+  filter((seqnames %in% c(1:22))) %>% 
+  seqinfo_fix("UCSC", "hg19")
+seqlevels(introgressed_reduced_OCN_and_noOCN_gr) <- seqlevelsInUse(introgressed_reduced_OCN_and_noOCN_gr)
+```
+
+```{r load mask and centromer regions, include=TRUE}
+# load mask file
+mask <- import("../../data/PIBv1_MPRA_final_extras/hs37d5_assembly_gaps.bed") %>% 
+  filter((seqnames %in% c(1:22))) %>% 
+  seqinfo_fix("UCSC", "hg19")
+seqlevels(mask) <- seqlevelsInUse(mask)
+
+# load centromere file
+centromere <- import("../../../../Datasets/reference_genomes/Homo_sapiens-hg19-GRCh37/UCSC_hg19/hg19.centromere.bed") %>% filter((seqnames %in% paste0("chr", c(1:22)))) %>% 
+seqinfo_fix("UCSC", "hg19")
+seqlevels(centromere) <- seqlevelsInUse(centromere)
+
+mask_complement <- gaps(mask) %>% filter(strand == "*")
+centromere_complement <- gaps(centromere) %>% filter(strand == "*")
+
+# save bed
+export(mask, "../../results/3-visualize_landscape_of_archaic_introgression_revised/this_study_mask.bed", format="BED")
+export(centromere, "../../results/3-visualize_landscape_of_archaic_introgression_revised/this_study_centromere.bed", format="BED")
+export(mask_complement, "../../results/3-visualize_landscape_of_archaic_introgression_revised/this_study_mask_complement.bed", format="BED")
+export(centromere_complement, "../../results/3-visualize_landscape_of_archaic_introgression_revised/this_study_centromere_complement.bed", format="BED")
+```
+
+```{r plot venn diagram functions, include=TRUE}
+venn_three_way <- function(grange1, grange2, grange3, label1, label2, label3, fills=c("#4194CF", "#E37243", "#F5C882")) {
+  Mb <- 1e6
+
+  length1 <- sum(width(grange1))/Mb
+  length2 <- sum(width(grange2))/Mb
+  length3 <- sum(width(grange3))/Mb
+
+  length12 <- sum(width(intersect(grange1, grange2)))/Mb
+  length13 <- sum(width(intersect(grange1, grange3)))/Mb
+  length23 <- sum(width(intersect(grange2, grange3)))/Mb
+
+  length123 <- sum(width(intersect(intersect(grange1, grange2), grange3)))/Mb
+
+  length1 <- (length1 - length12 - length13 + length123) %>% round(1)
+  length2 <- (length2 - length12 - length23 + length123) %>% round(1)
+  length3 <- (length3 - length13 - length23 + length123) %>% round(1)
+
+  length12 <- (length12 - length123) %>% round(1)
+  length13 <- (length13 - length123) %>% round(1)
+  length23 <- (length23 - length123) %>% round(1)
+
+  length123 <- length123 %>% round(1)
+
+  uniform_intersections <- c(length1, length2, length3, length12, length13, length23, length123)
+  names(uniform_intersections) <- 
+    c(
+      label1,
+      label2,
+      label3,
+      paste(label1, label2, sep="&"),
+      paste(label1, label3, sep="&"),
+      paste(label2, label3, sep="&"),
+      paste(label1, label2, label3, sep="&")
+    )
+  uniform_intersections_plot <- euler(uniform_intersections)
+
+  plot(uniform_intersections_plot, quantities = list(type = "counts"), fills = fills, alpha=0.5)
+}
+```
+
+```{r this study deserts, include=TRUE}
+# create pib deserts intersection
+introgressed_gaps_OCN_and_noOCN_gr <- c(introgressed_reduced_OCN_and_noOCN_gr, mask) %>% 
+  reduce() %>% gaps() %>% 
+  filter(strand == "*") 
+introgressed_deserts_OCN_and_noOCN_gr <- introgressed_gaps_OCN_and_noOCN_gr %>% 
+  filter(width >= 1e6)
+
+temp <- findOverlaps(introgressed_deserts_OCN_and_noOCN_gr, centromere)
+introgressed_deserts_OCN_and_noOCN_gr <- setdiff(introgressed_deserts_OCN_and_noOCN_gr, introgressed_deserts_OCN_and_noOCN_gr[queryHits(temp)])
+
+# save bed files
+export(introgressed_reduced_OCN_and_noOCN_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_reduced_OCN_and_noOCN.bed", format="BED")
+export(introgressed_gaps_OCN_and_noOCN_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_gaps_OCN_and_noOCN.bed", format="BED")
+export(introgressed_deserts_OCN_and_noOCN_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_deserts_OCN_and_noOCN.bed", format="BED")
+```
+
+```{r previous large deserts, include=TRUE}
+# load sankaraman deserts intersection
+sankararaman_deserts_nean_tb <- as_tibble(fread("../../data/PIBv1_MPRA_final_extras/deserts/Sankararaman_2016_NEA_deserts.bed"))
+names(sankararaman_deserts_nean_tb) <- c("seqnames", "start", "end")
+sankararaman_deserts_nean_tb <- sankararaman_deserts_nean_tb %>% mutate(start = start+1) 
+sankararaman_deserts_nean_gr <- sankararaman_deserts_nean_tb %>% GRanges() %>% 
+  seqinfo_fix("UCSC", "hg19")
+
+sankararaman_deserts_deni_tb <- as_tibble(fread("../../data/PIBv1_MPRA_final_extras/deserts/Sankararaman_2016_DEN_deserts.bed"))
+names(sankararaman_deserts_deni_tb) <- c("seqnames", "start", "end")
+sankararaman_deserts_deni_tb <- sankararaman_deserts_deni_tb %>% mutate(start = start+1) 
+sankararaman_deserts_deni_gr <- sankararaman_deserts_deni_tb %>% GRanges() %>% 
+  seqinfo_fix("UCSC", "hg19")
+
+sankararaman_deserts_nean_and_deni_gr <- intersect(sankararaman_deserts_nean_gr, sankararaman_deserts_deni_gr)
+sankararaman_deserts_nean_and_deni_gr <- sankararaman_deserts_nean_and_deni_gr %>% 
+  filter(seqnames %in% paste0("chr", 1:22))
+
+# load vernot deserts intersection
+vernot_deserts_nean_and_deni_tb <- as_tibble(fread("../../data/PIBv1_MPRA_final_extras/deserts/Vernot_2016_NEAdeserts_intersect_DENdeserts.bed"))
+names(vernot_deserts_nean_and_deni_tb) <- c("seqnames", "start", "end", "width", "strand")
+vernot_deserts_nean_and_deni_tb <- vernot_deserts_nean_and_deni_tb %>% mutate(start = start+1) 
+vernot_deserts_nean_and_deni_gr <- vernot_deserts_nean_and_deni_tb %>% GRanges() %>% 
+  seqinfo_fix("UCSC", "hg19")
+vernot_deserts_nean_and_deni_gr <- vernot_deserts_nean_and_deni_gr %>% 
+  filter(seqnames %in% paste0("chr", 1:22))
+
+# save bed files
+export(sankararaman_deserts_nean_and_deni_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/sankararaman_deserts_nean_and_deni.bed", format="BED")
+export(vernot_deserts_nean_and_deni_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/vernot_deserts_nean_and_deni.bed", format="BED")
+```
+
+```{r skov introgression, include=TRUE}
+# load skov et al. introgression
+hg38toHg19 <- import.chain("../../../../Datasets/reference_genomes/liftOver_chains/hg38ToHg19.over.chain")
+skov_introgressed_fragments_tb <- as_tibble(fread("../../data/PIBv1_MPRA_final_extras/deserts/Skov_et_al_Supplementary_Dataset_S1_introgression_fragments.txt"))
+skov_introgressed_fragments_tb <- skov_introgressed_fragments_tb %>% dplyr::select(chrom, start, end)
+names(skov_introgressed_fragments_tb) <- c("seqnames", "start", "end")
+skov_introgressed_fragments_tb <- skov_introgressed_fragments_tb %>% mutate(start = start+1) 
+skov_introgressed_reduced_gr <- skov_introgressed_fragments_tb %>% GRanges() %>% 
+  seqinfo_fix("UCSC", "hg38") %>%
+	liftOver(hg38toHg19) %>% 
+  seqinfo_fix("UCSC", "hg19") %>% 
+	unlist() %>% 
+  reduce() %>% 
+	sort() %>% 
+  filter(seqnames %in% paste0("chr", 1:22))
+export(skov_introgressed_reduced_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/skov_introgressed_reduced.bed", format="BED")
+
+# get skov et al. gaps 1Mb
+skov_introgressed_gaps_win_gr <- c(skov_introgressed_reduced_gr, mask) %>% 
+  reduce() %>% gaps() %>% 
+  filter(strand == "*") %>% 
+  filter(seqnames %in% paste0("chr", 1:22))
+export(skov_introgressed_gaps_win_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/skov_introgressed_gaps.bed", format="BED")
+
+# load skov et al. deserts
+skov_introgressed_deserts_win_tb <- as_tibble(fread("../../data/PIBv1_MPRA_final_extras/deserts/Skov_et_al_Supplementary_Dataset_S4_introgression_deserts.txt"))
+skov_introgressed_deserts_win_tb <- skov_introgressed_deserts_win_tb %>% dplyr::select(chrom, start, end)
+names(skov_introgressed_deserts_win_tb) <- c("seqnames", "start", "end")
+skov_introgressed_deserts_win_tb <- skov_introgressed_deserts_win_tb %>% mutate(start = start+1) 
+skov_introgressed_deserts_win_gr <- skov_introgressed_deserts_win_tb %>% GRanges() %>% 
+  seqinfo_fix("UCSC", "hg38") %>%
+	liftOver(hg38toHg19) %>% 
+  seqinfo_fix("UCSC", "hg19") %>% 
+	unlist() %>% 
+  reduce() %>% 
+	sort() %>% 
+  filter(seqnames %in% paste0("chr", 1:22))
+export(skov_introgressed_deserts_win_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/skov_introgressed_deserts.bed", format="BED")
+```
+
+```{r vernot introgression, include=TRUE}
+# load vernot et al. introgressed regions
+vernot_introgressed_ASN_gr <- unique(fread("../../data/PIBv1_MPRA_final_extras/introgression/Vernot_2016/introgressed_tag_snp_frequencies/all_tag_snps.ASN.merged.ALL.0.3_R2_cluster.1KG_phase3_essentials.bed")$V16) %>% 
+  as_tibble() %>% separate(col = value, into = c("seqnames", "start", "end"), sep="_") %>% 
+  GRanges() %>% seqinfo_fix("UCSC", "hg19")
+vernot_introgressed_EUR_gr <- unique(fread("../../data/PIBv1_MPRA_final_extras/introgression/Vernot_2016/introgressed_tag_snp_frequencies/all_tag_snps.EUR.merged.ALL.0.3_R2_cluster.1KG_phase3_essentials.bed")$V16) %>% 
+  as_tibble() %>% separate(col = value, into = c("seqnames", "start", "end"), sep="_") %>% 
+  GRanges() %>% seqinfo_fix("UCSC", "hg19")
+vernot_introgressed_SAS_gr <- unique(fread("../../data/PIBv1_MPRA_final_extras/introgression/Vernot_2016/introgressed_tag_snp_frequencies/all_tag_snps.SAS.merged.ALL.0.3_R2_cluster.1KG_phase3_essentials.bed")$V16) %>% 
+  as_tibble() %>% separate(col = value, into = c("seqnames", "start", "end"), sep="_") %>% 
+  GRanges() %>% seqinfo_fix("UCSC", "hg19")
+vernot_introgressed_PNG_gr <- unique(fread("../../data/PIBv1_MPRA_final_extras/introgression/Vernot_2016/introgressed_tag_snp_frequencies/all_tag_snps.PNG.merged.ALL.0.3_R2_cluster.1KG_phase3_essentials.bed")$V16) %>% 
+  as_tibble() %>% separate(col = value, into = c("seqnames", "start", "end"), sep="_") %>% 
+  GRanges() %>% seqinfo_fix("UCSC", "hg19")
+vernot_introgressed_reduced_gr <- reduce(c(vernot_introgressed_ASN_gr, vernot_introgressed_EUR_gr, vernot_introgressed_SAS_gr, vernot_introgressed_PNG_gr))
+export(vernot_introgressed_reduced_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/vernot_introgressed_reduced.bed", format="BED")
+
+# get vernot et al. introgressed gaps
+vernot_introgressed_gaps_gr <- c(vernot_introgressed_reduced_gr, mask) %>% 
+  reduce() %>% gaps() %>% 
+  filter(strand == "*") %>% 
+  filter(seqnames %in% paste0("chr", 1:22))
+export(vernot_introgressed_gaps_gr, "../../results/3-visualize_landscape_of_archaic_introgression_revised/vernot_introgressed_gaps.bed", format="BED")
+```
+
+```{r karyogram figures for manuscript, include=TRUE}
+# # plot comparison
+# p_karyo_tracts <- autoplot(seqinfo(introgressed_reduced_OCN_and_noOCN_gr), layout="karyogram") + 
+#   layout_karyogram(mask, geom="rect", ylim=c(0, 10), color=NA, fill="grey") +
+#   layout_karyogram(introgressed_gaps_OCN_and_noOCN_gr, geom="rect", ylim=c(6.6, 10), color=NA, fill="#4194CF") +
+#   layout_karyogram(skov_introgressed_gaps_win_gr, geom="rect", ylim=c(3.3, 6.6), color=NA, fill="#E37243") + 
+#   layout_karyogram(vernot_introgressed_gaps_gr, geom="rect", ylim=c(0, 3.3), color=NA, fill="#F5C882") 
+# p_karyo_tracts <- p_karyo_tracts + theme(
+#   panel.border = element_blank(),
+#   panel.background = element_blank(), 
+#   strip.background = element_blank()
+# ) + xlab("Position") + theme(aspect.ratio=0.02)
+
+# pdf("../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_gaps_OCN_noOCN_vs_skov_gaps_vs_previous_karyogram.pdf")
+# p_karyo_tracts
+# dev.off()
+
+# plot comparison
+p_karyo_tracts <- autoplot(seqinfo(introgressed_reduced_OCN_and_noOCN_gr), layout="karyogram") + 
+  layout_karyogram(mask, geom="rect", ylim=c(0, 10), color=NA, fill="grey") +
+  layout_karyogram(introgressed_reduced_OCN_and_noOCN_gr, geom="rect", ylim=c(6.6, 10), color=NA, fill="#4194CF") +
+  layout_karyogram(skov_introgressed_reduced_gr, geom="rect", ylim=c(3.3, 6.6), color=NA, fill="#E37243") + 
+  layout_karyogram(vernot_introgressed_reduced_gr, geom="rect", ylim=c(0, 3.3), color=NA, fill="#F5C882") 
+p_karyo_tracts <- p_karyo_tracts + theme(
+  panel.border = element_blank(),
+  panel.background = element_blank(), 
+  strip.background = element_blank()
+) + xlab("Position") + theme(aspect.ratio=0.02)
+
+pdf("../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_reduced_OCN_noOCN_vs_skov_gaps_vs_previous_karyogram.pdf")
+p_karyo_tracts
+dev.off()
+
+# plot comparison
+p_karyo_tracts <- autoplot(seqinfo(introgressed_reduced_OCN_and_noOCN_gr), layout="karyogram") + 
+  layout_karyogram(mask, geom="rect", ylim=c(0, 10), color=NA, fill="grey") +
+  layout_karyogram(introgressed_reduced_OCN_and_noOCN_gr, geom="rect", ylim=c(0, 10), color=NA, fill="#4194CF", alpha=0.1) +
+  layout_karyogram(introgressed_deserts_OCN_and_noOCN_gr, geom="rect", ylim=c(6, 10), color=NA, fill="#4194CF") +
+  layout_karyogram(skov_introgressed_deserts_win_gr, geom="rect", ylim=c(4, 6), color=NA, fill="#E37243") + 
+  layout_karyogram(vernot_deserts_nean_and_deni_gr, geom="rect", ylim=c(2, 4), color=NA, fill="#F5C882") + 
+  layout_karyogram(sankararaman_deserts_nean_and_deni_gr, geom="rect", ylim=c(0, 2), color=NA, fill="#e7298a")
+p_karyo_tracts <- p_karyo_tracts + theme(
+  panel.border = element_blank(),
+  panel.background = element_blank(), 
+  strip.background = element_blank()
+) + xlab("Position") + theme(aspect.ratio=0.02)
+
+pdf("../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_deserts_OCN_noOCN_vs_skov_deserts_vs_previous_karyogram.pdf")
+p_karyo_tracts
+dev.off()
+```
+
+```{r gaps venn diagram, include=TRUE}
+whole_genome_minus_mask <- setdiff(GRanges(seqinfo(introgressed_reduced_OCN_and_noOCN_gr)), mask)
+pdf("../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_reduced_OCN_noOCN_vs_skov_vs_vernot_eulerr.pdf", height=4, width=4)
+venn_three_way(introgressed_reduced_OCN_and_noOCN_gr, skov_introgressed_reduced_gr, vernot_introgressed_reduced_gr, "Archaic introgression\nPIB", "Archaic introgression\nSkov et al. (2020)", "Archaic introgression\nVernot et al. (2016)")
+dev.off()
+```
+
+```{r get go enrichment genes for corehaps, include=TRUE}
+ucsc_knownGene_abbrev_gr <- readRDS("../../../../Datasets/gene_annotations/get_canonical_genes/data_cleanup/canonical_gene_lift37_gr.rds") %>%
+  mutate(nearest_gene_orig_ensembl_id = tx_ensembl_gene_id, nearest_gene_orig_symbol = tx_hgnc_symbol) %>%
+  filter(!is.na(tx_hgnc_symbol)) %>%
+  filter(seqnames %in% 1:22) %>%
+  seqinfo_fix("UCSC", "hg19") %>%
+	sort()
+write_tsv(as_tibble(ucsc_knownGene_abbrev_gr), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/ucsc_knownGene_abbrev.txt.gz"))
+```
+
+```{r get go enrichment genes for gaps, include=TRUE}
+vernot_deserts_nean_and_deni_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, vernot_deserts_nean_and_deni_gr) %>% arrange(-width)
+write_tsv(as_tibble(vernot_deserts_nean_and_deni_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/vernot_deserts_nean_and_deni_ucsc_knownGene.txt.gz"))
+sankararaman_deserts_nean_and_deni_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, sankararaman_deserts_nean_and_deni_gr) %>% arrange(-width)
+write_tsv(as_tibble(sankararaman_deserts_nean_and_deni_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/sankararaman_deserts_nean_and_deni_ucsc_knownGene.txt.gz"))
+
+skov_introgressed_deserts_win_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, skov_introgressed_deserts_win_gr) %>% arrange(-width)
+write_tsv(as_tibble(skov_introgressed_deserts_win_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/skov_introgressed_deserts_win_ucsc_knownGene.txt.gz"))
+introgressed_deserts_OCN_and_noOCN_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, introgressed_deserts_OCN_and_noOCN_gr) %>% arrange(-width)
+write_tsv(as_tibble(introgressed_deserts_OCN_and_noOCN_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_deserts_OCN_and_noOCN_ucsc_knownGene.txt.gz"))
+
+skov_introgressed_gaps_win_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, skov_introgressed_gaps_win_gr) %>% arrange(-width)
+write_tsv(as_tibble(skov_introgressed_gaps_win_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/skov_introgressed_gaps_win_ucsc_knownGene.txt.gz"))
+introgressed_gaps_OCN_and_noOCN_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, introgressed_gaps_OCN_and_noOCN_gr) %>% arrange(-width)
+write_tsv(as_tibble(introgressed_gaps_OCN_and_noOCN_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_gaps_OCN_and_noOCN_ucsc_knownGene.txt.gz"))
+
+skov_introgressed_reduced_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, skov_introgressed_reduced_gr) %>% arrange(-width)
+write_tsv(as_tibble(skov_introgressed_reduced_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/skov_introgressed_reduced_ucsc_knownGene.txt.gz"))
+introgressed_reduced_OCN_and_noOCN_ucsc_knownGene <- find_overlaps_within(ucsc_knownGene_abbrev_gr, introgressed_reduced_OCN_and_noOCN_gr) %>% arrange(-width)
+write_tsv(as_tibble(introgressed_reduced_OCN_and_noOCN_ucsc_knownGene), gzfile("../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_reduced_OCN_and_noOCN_ucsc_knownGene.txt.gz"))
+```

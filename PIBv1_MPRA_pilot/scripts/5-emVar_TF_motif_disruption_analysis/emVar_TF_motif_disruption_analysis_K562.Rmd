@@ -1,0 +1,300 @@
+---
+title: "emVar TF motif disruption enrichment"
+author: "Stephen Rong"
+date: "2023-07-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, include=TRUE}
+# for data analysis
+library(tidyverse)
+library(data.table)
+library(ggpubr)
+library(ggrepel)
+library(scales)
+```
+
+```{r load and add columns, include=TRUE}
+# load summ files
+#   all variants
+assayed_variants_all_annotations_summ <- as_tibble(fread("../../results/3-merge_all_variant_annotations/mpra_ccre_variants_all_annotations_revised_summ.txt.gz"))
+assayed_variants_all_annotations_summ <- assayed_variants_all_annotations_summ %>% 
+  mutate(in_MPRA_CELL_assayed_variant = (!is.na(MPRA_K562_summ_Description_activity_log10FDR))) %>% 
+  mutate(in_MPRA_CELL_active_variant = (!is.na(MPRA_K562_summ_Description_active))) %>% 
+  mutate(in_MRPA_CELL_emVar_variant = (!is.na(MPRA_K562_summ_Summary))) %>% 
+  mutate(in_MRPA_CELL_linked_variant = (!is.na(MPRA_K562_summ_Summary)) & 
+    (!is.na(ABC_summ_Summary) | !is.na(Roadmap_Epigenomics_summ_Summary) | !is.na(EpiMap_summ_Summary)))
+```
+
+```{r get motif counts, include=TRUE}
+# Notes on HOCOMCOO
+# T stands for T-box transcription factors
+# AR stands for androgen receptor transcription factor
+
+# get list of motifs
+MPRA_K562_TF_jaspar_motifs <- setdiff(unique(unlist(strsplit(assayed_variants_all_annotations_summ$TF_motifs_jaspar_summ_Description, split=","))), NA)
+
+# get list for assayed x jaspar
+assayed_MPRA_K562_TF_jaspar_tb <- assayed_variants_all_annotations_summ %>% 
+  filter(in_MPRA_CELL_assayed_variant) %>% 
+  filter(!is.na(TF_motifs_jaspar_summ_Summary))
+
+assayed_MPRA_K562_TF_jaspar_motif_counts <- list()
+for (motif in MPRA_K562_TF_jaspar_motifs) {
+  assayed_MPRA_K562_TF_jaspar_motif_counts[motif] <- as_tibble(sum(grepl(motif, assayed_MPRA_K562_TF_jaspar_tb$TF_motifs_jaspar_summ_Description)))
+}
+
+assayed_MPRA_K562_TF_jaspar_motif_counts <- as_tibble(stack(assayed_MPRA_K562_TF_jaspar_motif_counts)) %>% 
+  dplyr::rename(motif = ind, assayed_count = values) %>% 
+  dplyr::select(motif, assayed_count)
+
+# get list for active x jaspar
+active_MPRA_K562_TF_jaspar_tb <- assayed_variants_all_annotations_summ %>% 
+  filter(in_MPRA_CELL_active_variant) %>% 
+  filter(!is.na(TF_motifs_jaspar_summ_Summary))
+
+active_MPRA_K562_TF_jaspar_motif_counts <- list()
+for (motif in MPRA_K562_TF_jaspar_motifs) {
+  active_MPRA_K562_TF_jaspar_motif_counts[motif] <- as_tibble(sum(grepl(motif, active_MPRA_K562_TF_jaspar_tb$TF_motifs_jaspar_summ_Description)))
+}
+
+active_MPRA_K562_TF_jaspar_motif_counts <- as_tibble(stack(active_MPRA_K562_TF_jaspar_motif_counts)) %>% 
+  dplyr::rename(motif = ind, active_count = values) %>% 
+  dplyr::select(motif, active_count)
+
+# get list for emVar x jaspar
+emVar_MPRA_K562_TF_jaspar_tb <- assayed_variants_all_annotations_summ %>% 
+  filter(in_MRPA_CELL_emVar_variant) %>% 
+  filter(!is.na(TF_motifs_jaspar_summ_Summary))
+
+emVar_MPRA_K562_TF_jaspar_motif_counts <- list()
+for (motif in MPRA_K562_TF_jaspar_motifs) {
+  emVar_MPRA_K562_TF_jaspar_motif_counts[motif] <- as_tibble(sum(grepl(motif, emVar_MPRA_K562_TF_jaspar_tb$TF_motifs_jaspar_summ_Description)))
+}
+
+emVar_MPRA_K562_TF_jaspar_motif_counts <- as_tibble(stack(emVar_MPRA_K562_TF_jaspar_motif_counts)) %>% 
+  dplyr::rename(motif = ind, emVar_count = values) %>% 
+  dplyr::select(motif, emVar_count)
+
+# get list for linked x jaspar
+linked_MPRA_K562_TF_jaspar_tb <- assayed_variants_all_annotations_summ %>% 
+  filter(in_MRPA_CELL_linked_variant) %>% 
+  filter(!is.na(TF_motifs_jaspar_summ_Summary))
+
+linked_MPRA_K562_TF_jaspar_motif_counts <- list()
+for (motif in MPRA_K562_TF_jaspar_motifs) {
+  linked_MPRA_K562_TF_jaspar_motif_counts[motif] <- as_tibble(sum(grepl(motif, linked_MPRA_K562_TF_jaspar_tb$TF_motifs_jaspar_summ_Description)))
+}
+
+linked_MPRA_K562_TF_jaspar_motif_counts <- as_tibble(stack(linked_MPRA_K562_TF_jaspar_motif_counts)) %>% 
+  dplyr::rename(motif = ind, linked_count = values) %>% 
+  dplyr::select(motif, linked_count)
+
+# get joint table
+all_MPRA_K562_TF_jaspar_motif_counts <- 
+    full_join(assayed_MPRA_K562_TF_jaspar_motif_counts, 
+      full_join(active_MPRA_K562_TF_jaspar_motif_counts, 
+        full_join(emVar_MPRA_K562_TF_jaspar_motif_counts, 
+          linked_MPRA_K562_TF_jaspar_motif_counts)))
+
+all_MPRA_K562_TF_jaspar_motif_counts <- all_MPRA_K562_TF_jaspar_motif_counts %>% 
+  mutate(active_assayed_ratio = log2(active_count/assayed_count)) %>% 
+  mutate(emVar_assayed_ratio = log2(emVar_count/assayed_count)) %>% 
+  mutate(emVar_active_ratio = log2(emVar_count/active_count)) %>% 
+  mutate(linked_assayed_ratio = log2(linked_count/assayed_count)) %>% 
+  mutate(linked_active_ratio = log2(linked_count/active_count)) %>% 
+  mutate(linked_emVar_ratio = log2(linked_count/emVar_count))
+```
+
+```{r get fishers exact test, include=TRUE}
+# fisher exact test
+total_assayed_count <- sum(assayed_variants_all_annotations_summ$in_MPRA_CELL_assayed_variant)
+total_active_count <- sum(assayed_variants_all_annotations_summ$in_MPRA_CELL_active_variant)
+total_emVar_count <- sum(assayed_variants_all_annotations_summ$in_MRPA_CELL_emVar_variant)
+total_linked_count <- sum(assayed_variants_all_annotations_summ$in_MRPA_CELL_linked_variant)
+all_MPRA_K562_TF_jaspar_motif_counts <- all_MPRA_K562_TF_jaspar_motif_counts %>% 
+  rowwise() %>% mutate(active_assayed_fisher_p_value = fisher.test(matrix(c(active_count,assayed_count-active_count,total_active_count,total_assayed_count-total_active_count), nrow=2))$p.value[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(active_assayed_fisher_odds_ratio = fisher.test(matrix(c(active_count,assayed_count-active_count,total_active_count,total_assayed_count-total_active_count), nrow=2))$estimate[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(active_assayed_fisher_LCI = fisher.test(matrix(c(active_count,assayed_count-active_count,total_active_count,total_assayed_count-total_active_count), nrow=2))$conf.int[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(active_assayed_fisher_UCI = fisher.test(matrix(c(active_count,assayed_count-active_count,total_active_count,total_assayed_count-total_active_count), nrow=2))$conf.int[[2]]) %>% ungroup() %>% 
+  mutate(active_assayed_fisher_p_value_adj = p.adjust(active_assayed_fisher_p_value, method="fdr")) %>% 
+  mutate(active_assayed_fisher_signif = (active_assayed_fisher_p_value_adj < 0.01)) %>% 
+  rowwise() %>% mutate(emVar_assayed_fisher_p_value = fisher.test(matrix(c(emVar_count,assayed_count-emVar_count,total_emVar_count,total_assayed_count-total_emVar_count), nrow=2))$p.value[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(emVar_assayed_fisher_odds_ratio = fisher.test(matrix(c(emVar_count,assayed_count-emVar_count,total_emVar_count,total_assayed_count-total_emVar_count), nrow=2))$estimate[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(emVar_assayed_fisher_LCI = fisher.test(matrix(c(emVar_count,assayed_count-emVar_count,total_emVar_count,total_assayed_count-total_emVar_count), nrow=2))$conf.int[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(emVar_assayed_fisher_UCI = fisher.test(matrix(c(emVar_count,assayed_count-emVar_count,total_emVar_count,total_assayed_count-total_emVar_count), nrow=2))$conf.int[[2]]) %>% ungroup() %>% 
+  mutate(emVar_assayed_fisher_p_value_adj = p.adjust(emVar_assayed_fisher_p_value, method="fdr")) %>% 
+  mutate(emVar_assayed_fisher_signif = (emVar_assayed_fisher_p_value_adj < 0.01)) %>% 
+  rowwise() %>% mutate(emVar_active_fisher_p_value = fisher.test(matrix(c(emVar_count,active_count-emVar_count,total_emVar_count,total_active_count-total_emVar_count), nrow=2))$p.value[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(emVar_active_fisher_odds_ratio = fisher.test(matrix(c(emVar_count,active_count-emVar_count,total_emVar_count,total_active_count-total_emVar_count), nrow=2))$estimate[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(emVar_active_fisher_LCI = fisher.test(matrix(c(emVar_count,active_count-emVar_count,total_emVar_count,total_active_count-total_emVar_count), nrow=2))$conf.int[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(emVar_active_fisher_UCI = fisher.test(matrix(c(emVar_count,active_count-emVar_count,total_emVar_count,total_active_count-total_emVar_count), nrow=2))$conf.int[[2]]) %>% ungroup() %>% 
+  mutate(emVar_active_fisher_p_value_adj = p.adjust(emVar_active_fisher_p_value, method="fdr")) %>% 
+  mutate(emVar_active_fisher_signif = (emVar_active_fisher_p_value_adj < 0.01)) %>% 
+  rowwise() %>% mutate(linked_assayed_fisher_p_value = fisher.test(matrix(c(linked_count,assayed_count-linked_count,total_linked_count,total_assayed_count-total_linked_count), nrow=2))$p.value[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_assayed_fisher_odds_ratio = fisher.test(matrix(c(linked_count,assayed_count-linked_count,total_linked_count,total_assayed_count-total_linked_count), nrow=2))$estimate[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_assayed_fisher_LCI = fisher.test(matrix(c(linked_count,assayed_count-linked_count,total_linked_count,total_assayed_count-total_linked_count), nrow=2))$conf.int[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_assayed_fisher_UCI = fisher.test(matrix(c(linked_count,assayed_count-linked_count,total_linked_count,total_assayed_count-total_linked_count), nrow=2))$conf.int[[2]]) %>% ungroup() %>% 
+  mutate(linked_assayed_fisher_p_value_adj = p.adjust(linked_assayed_fisher_p_value, method="fdr")) %>% 
+  mutate(linked_assayed_fisher_signif = (linked_assayed_fisher_p_value_adj < 0.01)) %>% 
+  rowwise() %>% mutate(linked_active_fisher_p_value = fisher.test(matrix(c(linked_count,active_count-linked_count,total_linked_count,total_active_count-total_linked_count), nrow=2))$p.value[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_active_fisher_odds_ratio = fisher.test(matrix(c(linked_count,active_count-linked_count,total_linked_count,total_active_count-total_linked_count), nrow=2))$estimate[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_active_fisher_LCI = fisher.test(matrix(c(linked_count,active_count-linked_count,total_linked_count,total_active_count-total_linked_count), nrow=2))$conf.int[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_active_fisher_UCI = fisher.test(matrix(c(linked_count,active_count-linked_count,total_linked_count,total_active_count-total_linked_count), nrow=2))$conf.int[[2]]) %>% ungroup() %>% 
+  mutate(linked_active_fisher_p_value_adj = p.adjust(linked_active_fisher_p_value, method="fdr")) %>% 
+  mutate(linked_active_fisher_signif = (linked_active_fisher_p_value_adj < 0.01)) %>% 
+  rowwise() %>% mutate(linked_emVar_fisher_p_value = fisher.test(matrix(c(linked_count,emVar_count-linked_count,total_linked_count,total_emVar_count-total_linked_count), nrow=2))$p.value[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_emVar_fisher_odds_ratio = fisher.test(matrix(c(linked_count,emVar_count-linked_count,total_linked_count,total_emVar_count-total_linked_count), nrow=2))$estimate[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_emVar_fisher_LCI = fisher.test(matrix(c(linked_count,emVar_count-linked_count,total_linked_count,total_emVar_count-total_linked_count), nrow=2))$conf.int[[1]]) %>% ungroup() %>% 
+  rowwise() %>% mutate(linked_emVar_fisher_UCI = fisher.test(matrix(c(linked_count,emVar_count-linked_count,total_linked_count,total_emVar_count-total_linked_count), nrow=2))$conf.int[[2]]) %>% ungroup() %>% 
+  mutate(linked_emVar_fisher_p_value_adj = p.adjust(linked_emVar_fisher_p_value, method="fdr")) %>% 
+  mutate(linked_emVar_fisher_signif = (linked_emVar_fisher_p_value_adj < 0.01))
+
+write_tsv(all_MPRA_K562_TF_jaspar_motif_counts, gzfile("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts.txt.gz"))
+write(as.character(filter(all_MPRA_K562_TF_jaspar_motif_counts, active_assayed_fisher_signif)$motif), "../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_active_assayed_signif.txt")
+write(as.character(filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_active_fisher_signif)$motif), "../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_active_signif.txt")
+write(as.character(filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_assayed_fisher_signif)$motif), "../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_assayed_signif.txt")
+write(as.character(filter(all_MPRA_K562_TF_jaspar_motif_counts, linked_active_fisher_signif)$motif), "../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_linked_active_signif.txt")
+write(as.character(filter(all_MPRA_K562_TF_jaspar_motif_counts, linked_assayed_fisher_signif)$motif), "../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_linked_assayed_signif.txt")
+write(as.character(filter(all_MPRA_K562_TF_jaspar_motif_counts, linked_emVar_fisher_signif)$motif), "../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_linked_emVar_signif.txt")
+```
+
+```{r analysis visualize, include=TRUE}
+ggplot() + 
+  geom_point(aes(assayed_count, emVar_count, color=emVar_assayed_fisher_signif), data=all_MPRA_K562_TF_jaspar_motif_counts, alpha=0.5) + 
+  geom_text_repel(aes(assayed_count, emVar_count, label = motif), data=filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_assayed_fisher_signif)) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab("Motif count (active)") + ylab("Motif count (emVars)") # + 
+  # scale_x_log10() + scale_y_log10()
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_assayed_ratio.pdf")
+
+ggplot() + 
+  geom_point(aes(active_count, emVar_count, color=emVar_active_fisher_signif), data=all_MPRA_K562_TF_jaspar_motif_counts, alpha=0.5) + 
+  geom_text_repel(aes(active_count, emVar_count, label = motif), data=filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_active_fisher_signif)) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab("Motif count (active)") + ylab("Motif count (emVars)") # + 
+  # scale_x_log10() + scale_y_log10()
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_active_ratio.pdf")
+```
+
+```{r compare active vs assayed, include=TRUE}
+# visualize active vs assayed
+ggplot() + 
+  geom_point(aes(-log10(emVar_assayed_fisher_p_value_adj), -log10(emVar_active_fisher_p_value_adj), color=(emVar_active_fisher_signif&emVar_assayed_fisher_signif)), data=all_MPRA_K562_TF_jaspar_motif_counts, alpha=0.5) + 
+  geom_text_repel(aes(-log10(emVar_assayed_fisher_p_value_adj), -log10(emVar_active_fisher_p_value_adj), label=gsub("::", "+", motif)), data=filter(all_MPRA_K562_TF_jaspar_motif_counts, (emVar_active_fisher_signif&emVar_assayed_fisher_signif))) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab("-log10(FDR) (assayed)") + ylab("-log10(FDR) (active)")
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_active_ratio_vs_assayed_ratio.pdf")
+```
+
+```{r volcano visualize, include=TRUE}
+# visualize volcano
+ggplot() + 
+  geom_point(aes(log2(emVar_assayed_fisher_odds_ratio), -log10(emVar_assayed_fisher_p_value_adj), color=emVar_assayed_fisher_signif), data=all_MPRA_K562_TF_jaspar_motif_counts, alpha=0.5) + 
+  geom_text_repel(aes(log2(emVar_assayed_fisher_odds_ratio), -log10(emVar_assayed_fisher_p_value_adj), label=gsub("::", "+", motif)), data=filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_assayed_fisher_signif)) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab(expression("log"["2"] ~ "Fold-Change (emVar/assayed K562)")) + ylab(expression("-log"["10"] ~ "FDR"))
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_assayed_ratio_volcano.pdf")
+
+ggplot() + 
+  geom_point(aes(log2(emVar_active_fisher_odds_ratio), -log10(emVar_active_fisher_p_value_adj), color=emVar_active_fisher_signif), data=all_MPRA_K562_TF_jaspar_motif_counts, alpha=0.5) + 
+  geom_text_repel(aes(log2(emVar_active_fisher_odds_ratio), -log10(emVar_active_fisher_p_value_adj), label=gsub("::", "+", motif)), data=filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_active_fisher_signif)) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab(expression("log"["2"] ~ "Fold-Change (emVar/active K562)")) + ylab(expression("-log"["10"] ~ "FDR"))
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_active_ratio_volcano.pdf")
+```
+
+```{r specify gene sets, include=TRUE}
+Immune_gene_sets_original <- readLines("Immune_gene_sets_original.txt")
+K562_gene_sets_final <- names(which(table(Immune_gene_sets_original) >= 1))
+write(K562_gene_sets_final, "../../results/5-emVar_TF_motif_disruption_analysis/K562_gene_sets_final.txt")
+
+# check if any of x belong to y after splitting motifs in x into z
+MPRA_K562_TF_jaspar_motifs_in_K562_gene_sets_final <- sapply(MPRA_K562_TF_jaspar_motifs, function(x) {any(sapply(K562_gene_sets_final, function(y) {any(sapply(strsplit(x, "::")[[1]], function(z) {toupper(y) == toupper(z)}))}))}) %>% which() %>% names()
+write(MPRA_K562_TF_jaspar_motifs_in_K562_gene_sets_final, "../../results/5-emVar_TF_motif_disruption_analysis/MPRA_K562_TF_jaspar_motifs_in_K562_gene_sets_final.txt")
+
+all_MPRA_K562_TF_jaspar_motif_counts <- all_MPRA_K562_TF_jaspar_motif_counts %>% 
+  rowwise() %>% mutate(motif_highlight = (motif %in% MPRA_K562_TF_jaspar_motifs_in_K562_gene_sets_final)) %>% ungroup() %>% 
+  mutate(motif_highlight = ifelse(motif == "CTCF", FALSE, motif_highlight))
+write_tsv(all_MPRA_K562_TF_jaspar_motif_counts, gzfile("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts.txt.gz"))
+```
+
+```{r ranked volcano highlighted, include=TRUE}
+# visualize volcano highlighted
+ggplot() + 
+  geom_hline(yintercept = -log10(0.01), color="grey") + 
+  geom_point(aes(log2(emVar_assayed_fisher_odds_ratio), -log10(emVar_assayed_fisher_p_value_adj), size=emVar_assayed_fisher_signif, color=motif_highlight), data=all_MPRA_K562_TF_jaspar_motif_counts, alpha=0.8) + 
+  geom_text_repel(aes(log2(emVar_assayed_fisher_odds_ratio), -log10(emVar_assayed_fisher_p_value_adj), label=gsub("::", "+", motif)), data=filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_assayed_fisher_signif, motif_highlight), max.overlaps=Inf, show.legend=FALSE, size=3) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab(expression("log"["2"] ~ "Fold-Change (emVar/assayed K562)")) + ylab(expression("-log"["10"] ~ "FDR")) + 
+  scale_size_manual(values = c(1, 3), name="FDR<0.01") + 
+  scale_color_manual(values = c("#b9b9b9", "#83b8d7"), name="Immune-related TFs") + 
+  scale_y_continuous(breaks= breaks_pretty())
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_assayed_ratio_volcano_highlighted.pdf")
+
+ggplot() + 
+  geom_hline(yintercept = -log10(0.01), color="grey") + 
+  geom_point(aes(log2(emVar_active_fisher_odds_ratio), -log10(emVar_active_fisher_p_value_adj), size=emVar_active_fisher_signif, color=motif_highlight), data=all_MPRA_K562_TF_jaspar_motif_counts, alpha=0.8) + 
+  geom_text_repel(aes(log2(emVar_active_fisher_odds_ratio), -log10(emVar_active_fisher_p_value_adj), label=gsub("::", "+", motif)), data=filter(all_MPRA_K562_TF_jaspar_motif_counts, emVar_active_fisher_signif, motif_highlight), max.overlaps=Inf, show.legend=FALSE, size=3) + 
+  theme_classic() + theme(aspect.ratio = 1) + 
+  xlab(expression("log"["2"] ~ "Fold-Change (emVar/active K562)")) + ylab(expression("-log"["10"] ~ "FDR")) + 
+  scale_size_manual(values = c(1, 3), name="FDR<0.01") + 
+  scale_color_manual(values = c("#b9b9b9", "#83b8d7"), name="Immune-related TFs") + 
+  scale_y_continuous(breaks= breaks_pretty())
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_active_ratio_volcano_highlighted.pdf")
+```
+
+```{r violin highlighted, include=TRUE}
+# visualize violin highlighted
+my_comparisons <- list(c(1, 2))
+my_label_y <- max(setdiff(log2(all_MPRA_K562_TF_jaspar_motif_counts$emVar_assayed_fisher_odds_ratio), c(Inf, -Inf))) + 0.75
+ggviolin(all_MPRA_K562_TF_jaspar_motif_counts %>% 
+           filter(is.finite(log2(emVar_assayed_fisher_odds_ratio))) %>% 
+           mutate(log2_emVar_assayed_fisher_odds_ratio = log2(emVar_assayed_fisher_odds_ratio)), 
+  x = "motif_highlight", 
+  y = "log2_emVar_assayed_fisher_odds_ratio", 
+  color = "motif_highlight", 
+  add = "boxplot",
+  shape = 16,
+  alpha=0.8
+) + 
+  rremove("legend") + 
+  stat_compare_means(method = "t.test", label.y=my_label_y, comparisons=my_comparisons) + 
+  theme(aspect.ratio = 2) + 
+  scale_color_manual(values = c("#b9b9b9", "#83b8d7")) +
+  xlab("") + ylab(expression("log"["2"] ~ "Fold-Change (emVar/assayed K562)")) + 
+  theme(axis.text.x=element_blank(),
+      axis.ticks.x=element_blank(),
+      axis.line.x=element_blank()) + 
+      ylim(c(-4, 6)) + 
+      scale_y_continuous(breaks= breaks_pretty())
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_assayed_ratio_violin_highlighted.pdf", scale=0.7)
+
+my_comparisons <- list(c(1, 2))
+my_label_y <- max(setdiff(log2(all_MPRA_K562_TF_jaspar_motif_counts$emVar_active_fisher_odds_ratio), c(Inf, -Inf))) + 0.75
+ggviolin(all_MPRA_K562_TF_jaspar_motif_counts %>% 
+           filter(is.finite(log2(emVar_active_fisher_odds_ratio))) %>% 
+           mutate(log2_emVar_active_fisher_odds_ratio = log2(emVar_active_fisher_odds_ratio)), 
+  x = "motif_highlight", 
+  y = "log2_emVar_active_fisher_odds_ratio", 
+  color = "motif_highlight", 
+  add = "boxplot",
+  shape = 16,
+  alpha=0.8
+) + 
+  rremove("legend") + 
+  stat_compare_means(method = "t.test", label.y=my_label_y, comparisons=my_comparisons) + 
+  theme(aspect.ratio = 2) + 
+  scale_color_manual(values = c("#b9b9b9", "#83b8d7")) +
+  xlab("") + ylab(expression("log"["2"] ~ "Fold-Change (emVar/active K562)")) + 
+  theme(axis.text.x=element_blank(),
+      axis.ticks.x=element_blank(),
+      axis.line.x=element_blank()) + 
+      ylim(c(-4, 6)) + 
+      scale_y_continuous(breaks= breaks_pretty())
+ggsave("../../results/5-emVar_TF_motif_disruption_analysis/all_MPRA_K562_TF_jaspar_motif_counts_emVar_active_ratio_violin_highlighted.pdf", scale=0.7)
+```

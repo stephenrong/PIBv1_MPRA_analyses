@@ -1,0 +1,149 @@
+# Order in which to run scripts
+
+# 1a-preprocess_PIBv1_MPRA_final:
+Rscript preprocess_PIBv1_MPRA_final.R
+Rscript ucsc_custom_track_adaptive_variants.R
+Rscript ucsc_custom_track_adaptive_corehaps.R
+Rscript ucsc_custom_track_adaptive_tracts.R
+Rscript ucsc_custom_track_introgressed_variants.R
+Rscript ucsc_custom_track_introgressed_corehaps.R
+Rscript ucsc_custom_track_introgressed_tracts.R
+Rscript ucsc_custom_track_mpra_ccre_variants.R
+Rscript ucsc_custom_track_mpra_encode_screen_v4.R
+Rscript ucsc_custom_track_variants_PIB_AFs.R
+
+# 2a-annotate_variants_Ensembl_VEP:
+sbatch annotate_variants_Ensembl_VEP.sh
+Rscript postprocess_variants_Ensembl_VEP.R
+Rscript ucsc_custom_track_variants_Ensembl_VEP.R
+
+# 2b-annotate_variants_SpliceAI:
+sbatch annotate_variants_SpliceAI.sh
+Rscript postprocess_variants_SpliceAI.R
+Rscript ucsc_custom_track_variants_SpliceAI.R
+
+# 2c-annotate_variants_1KGP_AFs:
+sbatch annotate_variants_1KGP_phase3_AFs.sh
+Rscript postprocess_variants_1KGP_phase3_AFs.R
+Rscript ucsc_custom_track_variants_1KGP_AFs.R
+
+# 2d-annotate_variants_gnomAD_AFs:
+sbatch annotate_variants_gnomAD_v3.1.2_AFs.sh
+sbatch vcf-concat_variants_gnomAD_v3.1.2_AFs.sh
+sbatch liftOver37_variants_gnomAD_v3.1.2_AFs.sh
+sbatch abbreviate_variants_gnomAD_v3.1.2_AF.sh
+Rscript postprocess_variants_gnomAD_v3.1.2_AFs.R
+Rscript ucsc_custom_track_variants_gnomAD_AFs.R
+
+# 2e-annotate_variants_archaic_genotypes:
+sbatch annotate_variants_archaic_genotypes.sh
+Rscript postprocess_variants_archaic_genotypes.R
+Rscript ucsc_custom_track_variants_archaic_genotypes.R
+
+# 2f-annotate_variants_CADD_scores:
+sbatch annotate_variants_CADD_scores.sh
+Rscript postprocess_variants_CADD_scores.R
+Rscript ucsc_custom_track_variants_CADD_scores.R
+
+# 2g-annotate_variants_phyloP_scores:
+sbatch annotate_variants_phyloP_scores.sh
+sbatch liftOver37_variants_phyloP_score.sh
+Rscript postprocess_variants_phyloP_scores.R
+Rscript ucsc_custom_track_variants_phyloP_scores.R
+
+# 2h-annotate_variants_ClinVar_categories:
+sbatch annotate_variants_ClinVar_categories.sh
+Rscript postprocess_variants_ClinVar_categories.R
+Rscript ucsc_custom_track_variants_ClinVar_categories.R
+
+# 2j-annotate_variants_ENCODE_cCREs:
+Rscript postprocess_variants_ENCODE_cCREs.R
+
+# 2k-annotate_variants_ENCODE_cell_lines:
+Rscript postprocess_variants_ENCODE_cCREs_Jurkat.R
+Rscript postprocess_variants_ENCODE_cCREs_K562.R
+
+# 2l-annotate_variants_ReMap_TFBS:
+Rscript postprocess_variants_ReMAP_TFBS_Jurkat.R
+Rscript postprocess_variants_ReMAP_TFBS_K562.R
+
+# 2m-annotate_variants_UKBB_BBJ_finemap:
+Rscript postprocess_variants_BBJ_finemap.R
+Rscript postprocess_variants_UKBB_finemap.R
+Rscript ucsc_custom_track_variants_BBJ_finemap.R
+Rscript ucsc_custom_track_variants_UKBB_finemap.R
+
+# 2n-annotate_variants_TF_motifs:
+sbatch rerun_variants_TF_motifs.sh
+sbatch rerun_variants_TF_motifs_merge_jaspar.sh
+sbatch rerun_variants_TF_motifs_merge_hocomoco.sh
+Rscript postprocess_variants_TF_motifs_hocomoco.R
+Rscript postprocess_variants_TF_motifs_jaspar.R
+Rscript ucsc_custom_track_variants_TF_motifs_hocomoco.R
+Rscript ucsc_custom_track_variants_TF_motifs_jaspar.R
+Rscript visualize_variants_TF_motifs.R
+
+# 2o-annotate_variants_genic_and_nearest_gene:
+Rscript postprocess_variants_nearest_gene.R
+
+# 2p-annotate_variants_gene_enhancer_links:
+Rscript postprocess_variants_gene_enhancer_links_ABC.R
+Rscript postprocess_variants_gene_enhancer_links_EpiMap.R
+Rscript postprocess_variants_gene_enhancer_links_Roadmap_Epigenomics.R
+
+# 2q-annotate_variants_Roadmap_Epigenomics_groups:
+Rscript postprocess_variants_Roadmap_Epigenomics_dyadic.R
+Rscript postprocess_variants_Roadmap_Epigenomics_enhancers.R
+Rscript postprocess_variants_Roadmap_Epigenomics_merged.R
+Rscript postprocess_variants_Roadmap_Epigenomics_promoters.R
+
+# 2r-annotate_variants_DHS_index_vocabulary:
+Rscript postprocess_variants_DHS_index_vocabulary.R
+
+# 2s-annotate_variants_DNase_footprints:
+Rscript postprocess_variants_DNase_footprints.R
+Rscript ucsc_custom_track_variants_DNase_footprints.R
+
+# 2t-annotate_variants_GWAS_Catalog:
+Rscript liftOver_GWAS_catalog_e109_r2023-07-05.R
+
+# 3-merge_all_variant_annotations:
+Rscript merge_all_variant_annotations.R
+
+# 3-overlap_emVars_GWAS_cCREs:
+Rscript overlap_emVars_GWAS_cCREs.R
+
+# 3-visualize_landscape_of_archaic_introgression_revised:
+Rscript -e "rmarkdown::render('plot_karyogram_final_introgressed_revised.Rmd')"
+Rscript gene_constraint_analysis_revised.R
+
+# 3-visualize_summary_of_functional_consequences:
+Rscript corehap_visualize_summary_of_functional_consequences.R
+Rscript introgressed_visualize_summary_of_functional_consequences.R
+
+# 4-simple_cCRE_enrichment_analysis_alt:
+Rscript simple_cCRE_enrichment_analysis_alt_DHS_index_corehap_enrichments.R
+Rscript simple_cCRE_enrichment_analysis_alt_Roadmap_Epigenomics_promoters_corehap_enrichments.R
+Rscript simple_cCRE_enrichment_analysis_alt_Roadmap_Epigenomics_enhancers_corehap_enrichments.R
+Rscript simple_cCRE_enrichment_analysis_alt_Roadmap_Epigenomics_dyadic_corehap_enrichments.R
+Rscript simple_cCRE_enrichment_analysis_alt_Roadmap_Epigenomics_merged_corehap_enrichments.R
+
+# 4-table_consequence_gene_lists:
+Rscript table_consequence_gene_lists_corehaps.R
+Rscript table_consequence_gene_lists_corehaps_ambiguous.R
+Rscript table_consequence_gene_lists_corehaps_denisovan.R
+Rscript table_consequence_gene_lists_corehaps_neanderthal.R
+
+# 4-table_corehaps_finemapped_UKBB_BBJ_overlap:
+Rscript table_corehaps_annotated_in_ClinVar_overlap.R
+Rscript table_corehaps_finemapped_UKBB_BBJ_overlap.R
+
+# 4-table_emVars_cCREs_gene_lists:
+Rscript table_emVars_cCREs_gene_lists.R
+
+# 4-table_emVars_linked_gene_lists:
+Rscript table_emVars_linked_gene_lists_corehaps.R
+Rscript table_emVars_linked_gene_lists_corehaps_ambiguous.R
+Rscript table_emVars_linked_gene_lists_corehaps_denisovan.R
+Rscript table_emVars_linked_gene_lists_corehaps_neanderthal.R
+Rscript table_emVars_linked_gene_lists_corehaps_revised.R
