@@ -26,7 +26,7 @@ Unzip "PIBv1_MPRA_mpra" and replace subdirectory PIBv1_MPRA_analyses/PIBv1_MPRA_
 Cd into PIBv1_MPRA_mpra and git clone https://github.com/tewhey-lab/MPRAmodel and https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline repositories and follow install dependencies instructions therein.
 
 ## Software dependencies
-Analyses performed on Yale University HPC with Slurm.
+Analyses performed on Yale University HPC as Slurm scripts or in RStudio.
 
 ### Software versions
 - fastqc=0.11.9
