@@ -9,7 +9,7 @@ library(plyranges)
 library(vcfR)
 
 # load TSV
-adaptive_variants_MPRA_K562 <- as_tibble(fread("../../workflows/PIBv1_MPRA_pilot/MPRAmodel_output_K562/results/MPRAmodel_PIBv1_MPRA_pilot_K562_K562_emVAR_glm_20230106.out"))
+adaptive_variants_MPRA_K562 <- as_tibble(fread("../../PIBv1_MPRA_mpra/Tucci_MPRA_pilot/MPRAmodel_output_K562/results/MPRAmodel_PIBv1_MPRA_pilot_K562_K562_emVAR_glm_20230106.out"))
 
 # add prefix and save names
 names(adaptive_variants_MPRA_K562) <- paste("MPRA_K562_orig", names(adaptive_variants_MPRA_K562), sep="_")
