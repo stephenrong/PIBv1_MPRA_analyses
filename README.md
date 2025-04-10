@@ -10,20 +10,26 @@ Contact the corresponding author with questions about these scripts. Last update
 - PIBv1_MPRA_final: Analyses based on the final archaic introgression dataset used in the manuscript. Run PIBv1_MPRA_final/scripts/main_runall.sh in order.
 - PIBv1_MPRA_enrichr: Enrichr gene set enrichment input gene sets, output pathway enrichments, and scripts for figures.
 - PIBv1_MPRA_collate: Scripts for collating MPRA and functional genomic analyses into intermediate files used for supplementary tables.
-- PIBv1_MPRA_mpra: MRPA sequencing analysis pipeline. Download from Zenodo (see below).
-- ../Datasets: Genomic or functional genomic annotations used in this project. Download from Zenodo (see below).
+- PIBv1_MPRA_mpra: MRPA sequencing analysis pipeline. Download from X (see below).
+- ../Datasets: Genomic or functional genomic annotations used in this project. Download from X (see below).
 
-## Genomic and functional genomic annotations on Zenodo
+TO DO
 
-Download Datasets.zip from Zenodo (...).
+## Genomic and functional genomic annotations on X
 
-Unzip "Datasets" and place in same directory as PIBv1_MPRA_analyses.
+TO DO 
 
-## MPRA sequencing analysis on Zenodo
+<!-- Download Datasets.zip from X (...). -->
 
-Download PIBv1_MPRA_mpra.zip from Zenodo (...).
+<!-- Unzip "Datasets" and place in same directory as PIBv1_MPRA_analyses. -->
 
-Unzip "PIBv1_MPRA_mpra" and replace subdirectory PIBv1_MPRA_analyses/PIBv1_MPRA_mpra.
+## MPRA sequencing analysis on X
+
+TO DO
+
+<!-- Download PIBv1_MPRA_mpra.zip from X (...). -->
+
+<!-- Unzip "PIBv1_MPRA_mpra" and replace subdirectory PIBv1_MPRA_analyses/PIBv1_MPRA_mpra. -->
 
 Cd into PIBv1_MPRA_mpra and git clone https://github.com/tewhey-lab/MPRAmodel and https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline repositories and follow install dependencies instructions therein.
 
