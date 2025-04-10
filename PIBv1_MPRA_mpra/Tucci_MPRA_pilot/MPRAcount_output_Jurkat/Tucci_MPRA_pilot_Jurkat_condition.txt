@@ -1,0 +1,8 @@
+Jurkat_plasmid_rep1	DNA
+Jurkat_plasmid_rep2	DNA
+Jurkat_plasmid_rep3	DNA
+Jurkat_plasmid_rep4	DNA
+Jurkat_rep1	Jurkat
+Jurkat_rep2	Jurkat
+Jurkat_rep3	Jurkat
+Jurkat_rep4	Jurkat

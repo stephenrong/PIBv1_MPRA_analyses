@@ -1,0 +1,11 @@
+// Raw sequencing files were archived at /gpfs/gibbs/pi/reilly/Stephen_archive/Sequencing/Tucci_MPRA_pilot
+
+{
+  "MPRAcount.parsed": "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/MPRAmatch_output/Tucci_MPRA_pilot.merged.match.enh.mapped.barcode.ct.parsed",
+  "MPRAcount.acc_id": "MPRAcount_acc_id_Jurkat.txt",
+  "MPRAcount.working_directory": "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/MPRAoligo/scripts/",
+  "MPRAcount.out_directory": "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/MPRAcount_output_Jurkat",
+  "MPRAcount.id_out": "Tucci_MPRA_pilot_Jurkat",
+  "MPRAcount.replicate_fastq": ["/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_plasmid_rep1.fastq.gz", "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_plasmid_rep2.fastq.gz", "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_plasmid_rep3.fastq.gz", "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_plasmid_rep4.fastq.gz", "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_rep1.fastq.gz", "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_rep2.fastq.gz", "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_rep3.fastq.gz", "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_count/Jurkat_rep4.fastq.gz"], 
+  "MPRAcount.replicate_id": ["Jurkat_plasmid_rep1", "Jurkat_plasmid_rep2", "Jurkat_plasmid_rep3", "Jurkat_plasmid_rep4", "Jurkat_rep1", "Jurkat_rep2", "Jurkat_rep3", "Jurkat_rep4"]
+}

@@ -1,0 +1,11 @@
+	condition
+K562_plasmid_rep1	DNA
+K562_plasmid_rep2	DNA
+K562_plasmid_rep3	DNA
+K562_plasmid_rep4	DNA
+K562_plasmid_rep5	DNA
+K562_rep1	K562
+K562_rep2	K562
+K562_rep3	K562
+K562_rep4	K562
+K562_rep5	K562

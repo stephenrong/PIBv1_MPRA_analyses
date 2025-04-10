@@ -1,0 +1,19 @@
+#!/bin/sh
+gunzip -cd Jurkat_plasmid_rep1.fastq.gz | head -n 400000 | bgzip >| Jurkat_plasmid_rep1_test.fastq.gz
+gunzip -cd Jurkat_plasmid_rep2.fastq.gz | head -n 400000 | bgzip >| Jurkat_plasmid_rep2_test.fastq.gz
+gunzip -cd Jurkat_plasmid_rep3.fastq.gz | head -n 400000 | bgzip >| Jurkat_plasmid_rep3_test.fastq.gz
+gunzip -cd Jurkat_plasmid_rep4.fastq.gz | head -n 400000 | bgzip >| Jurkat_plasmid_rep4_test.fastq.gz
+gunzip -cd Jurkat_rep1.fastq.gz | head -n 400000 | bgzip >| Jurkat_rep1_test.fastq.gz
+gunzip -cd Jurkat_rep2.fastq.gz | head -n 400000 | bgzip >| Jurkat_rep2_test.fastq.gz
+gunzip -cd Jurkat_rep3.fastq.gz | head -n 400000 | bgzip >| Jurkat_rep3_test.fastq.gz
+gunzip -cd Jurkat_rep4.fastq.gz | head -n 400000 | bgzip >| Jurkat_rep4_test.fastq.gz
+gunzip -cd K562_plasmid_rep1.fastq.gz | head -n 400000 | bgzip >| K562_plasmid_rep1_test.fastq.gz
+gunzip -cd K562_plasmid_rep2.fastq.gz | head -n 400000 | bgzip >| K562_plasmid_rep2_test.fastq.gz
+gunzip -cd K562_plasmid_rep3.fastq.gz | head -n 400000 | bgzip >| K562_plasmid_rep3_test.fastq.gz
+gunzip -cd K562_plasmid_rep4.fastq.gz | head -n 400000 | bgzip >| K562_plasmid_rep4_test.fastq.gz
+gunzip -cd K562_plasmid_rep5.fastq.gz | head -n 400000 | bgzip >| K562_plasmid_rep5_test.fastq.gz
+gunzip -cd K562_rep1.fastq.gz | head -n 400000 | bgzip >| K562_rep1_test.fastq.gz
+gunzip -cd K562_rep2.fastq.gz | head -n 400000 | bgzip >| K562_rep2_test.fastq.gz
+gunzip -cd K562_rep3.fastq.gz | head -n 400000 | bgzip >| K562_rep3_test.fastq.gz
+gunzip -cd K562_rep4.fastq.gz | head -n 400000 | bgzip >| K562_rep4_test.fastq.gz
+gunzip -cd K562_rep5.fastq.gz | head -n 400000 | bgzip >| K562_rep5_test.fastq.gz

@@ -1,0 +1,10 @@
+// Raw sequencing files were archived at /gpfs/gibbs/pi/reilly/Stephen_archive/Sequencing/Tucci_MPRA_pilot
+
+{
+  "MPRAmatch.read_a": "/gpfs/gibbs/pi/reilly/Stephen_archive/Projects_farnam/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_match/Tucci-MPRA-Enh-Barcode_S1_merged_R1_001.fastq.gz",
+  "MPRAmatch.read_b": "/gpfs/gibbs/pi/reilly/Stephen_archive/Projects_farnam/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/fastq_match/Tucci-MPRA-Enh-Barcode_S1_merged_R2_001.fastq.gz",
+  "MPRAmatch.reference_fasta": "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/data/Tucci_MPRA_pilot_oligos/PIB92_pilot_MPRA_final_oligos_inclControls_toOrder_SRc2.fasta.gz",
+  "MPRAmatch.working_directory": "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/MPRAoligo/scripts/",
+  "MPRAmatch.out_directory": "/gpfs/ycga/project/reilly/sr2446/Projects/TucciMPRAPilot/workflows/Tucci_MPRA_pilot/MPRAmatch_output/",
+  "MPRAmatch.id_out": "Tucci_MPRA_pilot"
+}

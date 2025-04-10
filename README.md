@@ -1,10 +1,8 @@
 # Long-term isolation and archaic introgression shape functional genetic variation in Near Oceania
 
-Massively parallel reporter assay (MPRA) and functional genomics analyses for the manuscript. See the main repository for the manuscript: https://github.com/YourePrettyGood/PIBv1_manuscript/.
+Code used for massively parallel reporter assay (MPRA) and functional genomics analyses. See the main repository for the manuscript: https://github.com/YourePrettyGood/PIBv1_manuscript/.
 
-## Purpose
-
-
+Contact the corresponding author with questions about these scripts. Last updated April 10th 2025. 
 
 ## MPRA analyses scripts here
 

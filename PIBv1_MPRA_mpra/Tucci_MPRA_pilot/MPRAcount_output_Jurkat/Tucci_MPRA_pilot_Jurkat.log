@@ -1,0 +1,48 @@
+Stats for Jurkat_plasmid_rep1
+Flag	BC Count	Read Sum
+0	5424402	17149702
+1	119947	380396
+2	75319	227188
+counted	5424402	17149702
+Stats for Jurkat_plasmid_rep2
+Flag	BC Count	Read Sum
+0	5566362	20207888
+1	123361	450816
+2	78085	268784
+counted	5566362	20207888
+Stats for Jurkat_plasmid_rep3
+Flag	BC Count	Read Sum
+0	5182208	14462264
+1	114613	321310
+2	71197	189982
+counted	5182208	14462264
+Stats for Jurkat_plasmid_rep4
+Flag	BC Count	Read Sum
+0	5942521	21603253
+1	132300	483327
+2	83544	286263
+counted	5942521	21603253
+Stats for Jurkat_rep1
+Flag	BC Count	Read Sum
+0	877944	3430498
+1	31683	130867
+2	11930	43724
+counted	877944	3430498
+Stats for Jurkat_rep2
+Flag	BC Count	Read Sum
+0	801050	12393653
+1	28484	465484
+2	12867	159601
+counted	801050	12393653
+Stats for Jurkat_rep3
+Flag	BC Count	Read Sum
+0	1560057	12261664
+1	52087	450953
+2	23070	161161
+counted	1560057	12261664
+Stats for Jurkat_rep4
+Flag	BC Count	Read Sum
+0	1890064	12444044
+1	62224	455429
+2	27301	161383
+counted	1890064	12444044
