@@ -1,4 +1,4 @@
-# Massively parallel reporter assay and functional annotations analyses for "Long-term isolation and archaic introgression shape functional genetic variation in Near Oceania"
+# Massively parallel reporter assay analyses for "Long-term isolation and archaic introgression shape functional genetic variation in Near Oceania"
 
 Code used for massively parallel reporter assay (MPRA) and functional genomics analyses. See the main repository for the manuscript: https://github.com/YourePrettyGood/PIBv1_manuscript/.
 
