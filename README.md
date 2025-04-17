@@ -6,7 +6,7 @@ See the main repository for the manuscript: https://github.com/YourePrettyGood/P
 
 Last updated April 10th 2025 by Stephen Rong.
 
-## MPRA analyses scripts here
+## Repository contents
 
 **PIBv1_MPRA_mpra**: MRPA sequencing analysis pipeline. Cd into PIBv1_MPRA_mpra and git clone https://github.com/tewhey-lab/MPRAmodel and https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline repositories and follow install dependencies instructions therein. Protected accession and count table files can be downloaded from dbGAP (XXX) and merged with this folder.
 
