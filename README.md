@@ -9,7 +9,7 @@ Last updated April 17th 2025 by Stephen Rong (stephen AT rong AT yale DOT edu).
 ## Repository contents
 
 ### PIBv1_MPRA_mpra
-MRPA sequencing analysis pipeline. Cd into PIBv1_MPRA_mpra and git clone https://github.com/tewhey-lab/MPRAmodel and https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline repositories and follow install dependencies instructions therein. Protected accession and count table files can be downloaded from dbGAP (XXX) and merged with this folder.
+MRPA sequencing analysis pipeline. Cd into PIBv1_MPRA_mpra and git clone https://github.com/tewhey-lab/MPRAmodel and https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline repositories and follow install dependencies instructions therein. Raw FASTQ files can be downloaded from dbGAP (XXX) and placed into the fastq_count and fastq_match folders. Final protected accession and count table files can be downloaded from dbGAP (XXX) and merged with this folder.
 
 ### PIBv1_MPRA_pilot
 Analyses based on the pilot archaic introgression dataset used to create the MPRA. Run PIBv1_MPRA_pilot/scripts/main_runall.sh in order. Additional protected data files can be downloaded from dbGAP (XXX) and merged with this folder.
