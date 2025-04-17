@@ -1,0 +1,31 @@
+file: Datasets/reference_genomes/Homo_sapiens-hg19-GRCh37/UCSC_hg19/hg19.fa.gz
+source: download from https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/, https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz
+
+file: Datasets/human_popgen_genomes/1KGP_phase3_genomes/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5c.20130502.sites.vcf.gz
+source: download from https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/, https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5c.20130502.sites.vcf.gz
+
+file: Datasets/variant_effect_predictions/CADD/GRCh37_v1.6/whole_genome_SNVs_inclAnno.tsv.gz
+source: download from https://cadd.gs.washington.edu/download, https://krishna.gs.washington.edu/download/CADD/v1.6/GRCh38/whole_genome_SNVs_inclAnno.tsv.gz
+
+file: Datasets/phylo_conservation/Zoonomia_2020_human_phyloP_scores/data_download/241-mammalian-2020v2.phylop-Homo_sapiens.bigWig
+source: download from https://cgl.gi.ucsc.edu/data/cactus/, https://cgl.gi.ucsc.edu/data/cactus/241-mammalian-2020v2.phylop-Homo_sapiens.bigWig
+
+file: Datasets/variant_effect_predictions/SpliceAI/data_download/spliceai_scores.raw.snv.hg19.vcf.gz
+source: download from https://basespace.illumina.com/s/otSPW8hnhaZR, genome_scores_v1.3/spliceai_scores.raw.snv.hg19.vcf.gz, 
+	but note precomputed scores are now retired https://github.com/broadinstitute/SpliceAI-lookup/issues/36
+
+file: Datasets/human_popgen_genomes/archaic_high_cov_genomes/altai_denisovan/altai_denisovan_masked_norm.vcf.gz
+source: from Datasets/human_popgen_genomes/archaic_high_cov_genomes/altai_denisovan/, 
+	run get_altai_denisovan.sh, filter_altai_denisovan.sh, clean_archaic_genomes.sh 
+
+file: Datasets/human_popgen_genomes/archaic_high_cov_genomes/altai_neanderthal/altai_neanderthal_masked_norm.vcf.gz
+source: from Datasets/human_popgen_genomes/archaic_high_cov_genomes/altai_neanderthal/, 
+	run get_altai_neanderthal.sh, filter_altai_neanderthal.sh
+
+file: Datasets/human_popgen_genomes/archaic_high_cov_genomes/chagyrskaya_neanderthal/chagyrskaya_neanderthal_masked_norm.vcf.gz
+source: from Datasets/human_popgen_genomes/archaic_high_cov_genomes/chagyrskaya_neanderthal/, 
+	run get_chagyrskaya_neanderthal.sh, filter_chagyrskaya_neanderthal.sh
+
+file: Datasets/human_popgen_genomes/archaic_high_cov_genomes/vindija_neanderthal/vindija_neanderthal_masked_norm.vcf.gz
+source: from Datasets/human_popgen_genomes/archaic_high_cov_genomes/vindija_neanderthal/, 
+	run get_vindija_neanderthal.sh, filter_vindija_neanderthal.sh
