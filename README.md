@@ -2,9 +2,9 @@
 
 Code used for massively parallel reporter assays (MPRAs) and functional genomic analyses and visualizations. 
 
-See the main repository for the manuscript: https://github.com/YourePrettyGood/PIBv1_manuscript/.
+See the main repository for the manuscript: https://github.com/YourePrettyGood/PIBv1_manuscript/. Paper available at (XXX).
 
-Last updated April 17th 2025 by Stephen Rong (stephen AT rong AT yale DOT edu).
+Last updated April 17th 2025 by Stephen Rong (stephen DOT rong AT yale DOT edu). Contact corresponding author with questions.
 
 ## Repository contents
 
