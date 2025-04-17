@@ -1,4 +1,4 @@
-# MPRA and functional genomic analyses for the manuscript "Long-term isolation and archaic introgression shape functional genetic variation in Near Oceania"
+# MPRA analyses for the manuscript "Long-term isolation and archaic introgression shape functional genetic variation in Near Oceania"
 
 Code used for massively parallel reporter assays (MPRAs) and functional genomic analyses and visualizations. 
 
