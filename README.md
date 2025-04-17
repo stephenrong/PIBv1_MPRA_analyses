@@ -8,12 +8,17 @@ Last updated April 10th 2025 by Stephen Rong.
 
 ## MPRA analyses scripts here
 
-- PIBv1_MPRA_pilot: Analyses based on the pilot archaic introgression dataset used to create the MPRA. Run PIBv1_MPRA_pilot/scripts/main_runall.sh in order. Additional protected data files can be downloaded from dbGAP (XXX) and merged with this folder.
-- PIBv1_MPRA_final: Analyses based on the final archaic introgression dataset used in the manuscript. Run PIBv1_MPRA_final/scripts/main_runall.sh in order. Additional protected data files can be downloaded from dbGAP (XXX) and merged with this folder.
-- PIBv1_MPRA_enrichr: Enrichr gene set enrichment input gene sets, output pathway enrichments, and scripts for figures.
-- PIBv1_MPRA_collate: Scripts for collating MPRA and functional genomic analyses into intermediate files used for supplementary tables.
-- PIBv1_MPRA_mpra: MRPA sequencing analysis pipeline. Cd into PIBv1_MPRA_mpra and git clone https://github.com/tewhey-lab/MPRAmodel and https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline repositories and follow install dependencies instructions therein. Protected accession and count table files can be downloaded from dbGAP (XXX) and merged with this folder.
-- Datasets: Additional genomic or functional genomic annotations downloaded and modified from external sources. Contents can be downloaded from Zenodo (XXX) and merged with this folder. Some particularly large annotations can be downloaded following the note where_to_get_additional_large_files.txt.
+**PIBv1_MPRA_mpra**: MRPA sequencing analysis pipeline. Cd into PIBv1_MPRA_mpra and git clone https://github.com/tewhey-lab/MPRAmodel and https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline repositories and follow install dependencies instructions therein. Protected accession and count table files can be downloaded from dbGAP (XXX) and merged with this folder.
+
+**PIBv1_MPRA_pilot**: Analyses based on the pilot archaic introgression dataset used to create the MPRA. Run PIBv1_MPRA_pilot/scripts/main_runall.sh in order. Additional protected data files can be downloaded from dbGAP (XXX) and merged with this folder.
+
+**PIBv1_MPRA_final**: Analyses based on the final archaic introgression dataset used in the manuscript. Run PIBv1_MPRA_final/scripts/main_runall.sh in order. Additional protected data files can be downloaded from dbGAP (XXX) and merged with this folder.
+
+**PIBv1_MPRA_enrichr**: Enrichr gene set enrichment input gene sets, output pathway enrichments, and scripts for figures.
+
+**PIBv1_MPRA_collate**: Scripts for collating MPRA and functional genomic analyses into intermediate files used for supplementary tables.
+
+**Datasets**: Additional genomic or functional genomic annotations downloaded and modified from external sources. Contents can be downloaded from Zenodo (XXX) and merged with this folder. Some particularly large annotations can be downloaded following the note where_to_get_additional_large_files.txt. 
 
 ## Software dependencies
 Analyses performed on Yale University HPC as Slurm scripts or in RStudio.
