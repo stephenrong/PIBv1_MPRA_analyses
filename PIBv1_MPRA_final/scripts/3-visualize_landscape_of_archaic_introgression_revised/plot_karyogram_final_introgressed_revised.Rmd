@@ -39,7 +39,7 @@ mask <- import("../../data/PIBv1_MPRA_final_extras/hs37d5_assembly_gaps.bed") %>
 seqlevels(mask) <- seqlevelsInUse(mask)
 
 # load centromere file
-centromere <- import("../../../../Datasets/reference_genomes/Homo_sapiens-hg19-GRCh37/UCSC_hg19/hg19.centromere.bed") %>% filter((seqnames %in% paste0("chr", c(1:22)))) %>% 
+centromere <- import("../../../Datasets/reference_genomes/Homo_sapiens-hg19-GRCh37/UCSC_hg19/hg19.centromere.bed") %>% filter((seqnames %in% paste0("chr", c(1:22)))) %>% 
 seqinfo_fix("UCSC", "hg19")
 seqlevels(centromere) <- seqlevelsInUse(centromere)
 
@@ -145,7 +145,7 @@ export(vernot_deserts_nean_and_deni_gr, "../../results/3-visualize_landscape_of_
 
 ```{r skov introgression, include=TRUE}
 # load skov et al. introgression
-hg38toHg19 <- import.chain("../../../../Datasets/reference_genomes/liftOver_chains/hg38ToHg19.over.chain")
+hg38toHg19 <- import.chain("../../../Datasets/reference_genomes/liftOver_chains/hg38ToHg19.over.chain")
 skov_introgressed_fragments_tb <- as_tibble(fread("../../data/PIBv1_MPRA_final_extras/deserts/Skov_et_al_Supplementary_Dataset_S1_introgression_fragments.txt"))
 skov_introgressed_fragments_tb <- skov_introgressed_fragments_tb %>% dplyr::select(chrom, start, end)
 names(skov_introgressed_fragments_tb) <- c("seqnames", "start", "end")
@@ -268,7 +268,7 @@ dev.off()
 ```
 
 ```{r get go enrichment genes for corehaps, include=TRUE}
-ucsc_knownGene_abbrev_gr <- readRDS("../../../../Datasets/gene_annotations/get_canonical_genes/data_cleanup/canonical_gene_lift37_gr.rds") %>%
+ucsc_knownGene_abbrev_gr <- readRDS("../../../Datasets/gene_annotations/get_canonical_genes/data_cleanup/canonical_gene_lift37_gr.rds") %>%
   mutate(nearest_gene_orig_ensembl_id = tx_ensembl_gene_id, nearest_gene_orig_symbol = tx_hgnc_symbol) %>%
   filter(!is.na(tx_hgnc_symbol)) %>%
   filter(seqnames %in% 1:22) %>%

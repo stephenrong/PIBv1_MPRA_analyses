@@ -13,7 +13,7 @@ source("../shared_functions/seqinfo_fix_change.R")
 introgressed_variants_tb <- as_tibble(readRDS("../../results/1a-preprocess_PIBv1_MPRA_final/introgressed_variants.rds"))[,1:10]
 
 # load Roadmap_Epigenomics_dyadic
-Roadmap_Epigenomics_dyadic_tb <- as_tibble(fread(paste0("../../../../Datasets/gene_regulation_element_catalogs/Roadmap_Epigenomics_elements/data_cleanup/GRCh37_merged/Roadmap_Epigenomics_dyadic2_groups.txt.gz")))
+Roadmap_Epigenomics_dyadic_tb <- as_tibble(fread(paste0("../../../Datasets/gene_regulation_element_catalogs/Roadmap_Epigenomics_elements/data_cleanup/GRCh37_merged/Roadmap_Epigenomics_dyadic2_groups.txt.gz")))
 
 # rename group
 Roadmap_Epigenomics_dyadic_tb <- Roadmap_Epigenomics_dyadic_tb %>% 

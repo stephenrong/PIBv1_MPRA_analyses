@@ -34,7 +34,7 @@ corehaps_variants_finemapped <- bind_rows(corehaps_variants_finemapped_UKBB, cor
 	arrange(-FineMapped_pip) %>% 
 	mutate(FineMapped_duplicated = duplicated(VariantID))
 
-trait_map <- read_tsv("../../../../Datasets/fine_mapped_regions_gwas/Kanai_et_2021_fine_mapped_ukbb/data_download/release1.1/UKBB_94traits_release1.traits")
+trait_map <- read_tsv("../../../Datasets/fine_mapped_regions_gwas/Kanai_et_2021_fine_mapped_ukbb/data_download/release1.1/UKBB_94traits_release1.traits")
 trait_map <- trait_map %>% dplyr::select(trait, description)
 names(trait_map) <- c("FineMapped_trait", "FineMapped_description")
 
@@ -88,7 +88,7 @@ introgressed_variants_finemapped <- bind_rows(introgressed_variants_finemapped_U
 	arrange(-FineMapped_pip) %>% 
 	mutate(FineMapped_duplicated = duplicated(VariantID))
 
-trait_map <- read_tsv("../../../../Datasets/fine_mapped_regions_gwas/Kanai_et_2021_fine_mapped_ukbb/data_download/release1.1/UKBB_94traits_release1.traits")
+trait_map <- read_tsv("../../../Datasets/fine_mapped_regions_gwas/Kanai_et_2021_fine_mapped_ukbb/data_download/release1.1/UKBB_94traits_release1.traits")
 trait_map <- trait_map %>% dplyr::select(trait, description)
 names(trait_map) <- c("FineMapped_trait", "FineMapped_description")
 

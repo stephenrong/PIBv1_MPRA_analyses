@@ -13,7 +13,7 @@ source("../shared_functions/seqinfo_fix_change.R")
 adaptive_variants_tb <- as_tibble(readRDS("../../results/1a-preprocess_PIBv1_MPRA_pilot/adaptive_variants.rds"))[,1:10]
 
 # load DHS_index_vocabulary
-DHS_index_vocabulary_tb <- as_tibble(fread(paste0("../../../../Datasets/gene_regulation_element_catalogs/DHS_index_vocabulary/data_cleanup/GRCh37_merged/DHS_index_vocabulary.txt.gz")))
+DHS_index_vocabulary_tb <- as_tibble(fread(paste0("../../../Datasets/gene_regulation_element_catalogs/DHS_index_vocabulary/data_cleanup/GRCh37_merged/DHS_index_vocabulary.txt.gz")))
 
 # rename component
 DHS_index_vocabulary_tb <- DHS_index_vocabulary_tb %>% 

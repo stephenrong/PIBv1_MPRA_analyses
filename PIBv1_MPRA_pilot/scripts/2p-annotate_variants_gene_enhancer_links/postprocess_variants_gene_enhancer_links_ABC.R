@@ -13,7 +13,7 @@ source("../shared_functions/seqinfo_fix_change.R")
 adaptive_variants_tb <- as_tibble(readRDS("../../results/1a-preprocess_PIBv1_MPRA_pilot/adaptive_variants.rds"))[,1:10]
 
 # load ABC
-ABC_gene_enhancer_links_tb <- as_tibble(fread(paste0("../../../../Datasets/gene_regulation_gene_enhancer_links/ABC_gene_enhancer_links/data_cleanup/GRCh37_merged/ABC_gene_enhancer_links.txt.gz")))
+ABC_gene_enhancer_links_tb <- as_tibble(fread(paste0("../../../Datasets/gene_regulation_gene_enhancer_links/ABC_gene_enhancer_links/data_cleanup/GRCh37_merged/ABC_gene_enhancer_links.txt.gz")))
 
 # remove ambig TSS
 ABC_gene_enhancer_links_tb <- ABC_gene_enhancer_links_tb %>% 

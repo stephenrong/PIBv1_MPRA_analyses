@@ -563,7 +563,7 @@ corehaps_variants_tb <- introgressed_variants_tb %>%
 	filter(Corehaps_count > 0)
 
 # overlap ENCODE cCREs
-ENCODE_cCREs_tb <- as_tibble(fread("../../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_agnostic/ENCODE_SCREEN_V4_cCREs_lift37/GRCh38-cCREs.V4.lift37.nochr.sort.bed.gz"))
+ENCODE_cCREs_tb <- as_tibble(fread("../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_agnostic/ENCODE_SCREEN_V4_cCREs_lift37/GRCh38-cCREs.V4.lift37.nochr.sort.bed.gz"))
 ENCODE_cCREs_tb <- ENCODE_cCREs_tb[,c(1,2,3,6)]
 ENCODE_cCREs_tb <- unique(ENCODE_cCREs_tb)
 names(ENCODE_cCREs_tb) <- c("seqnames", "start", "end", "ENCODE_cCREs_orig_class")
@@ -576,7 +576,7 @@ mpra_ccre_variants_tb <- subsetByOverlaps(
 ) %>% as_tibble()
 
 # flag liftOver
-hg19ToHg38 <- import.chain("../../../../Datasets/reference_genomes/liftOver_chains/hg19ToHg38.over.chain")
+hg19ToHg38 <- import.chain("../../../Datasets/reference_genomes/liftOver_chains/hg19ToHg38.over.chain")
 
 introgressed_variants_lift38_gr <- introgressed_variants_tb %>% 
 	GRanges() %>% seqinfo_fix("NCBI", "GRCh37") %>% 

@@ -13,7 +13,7 @@ adaptive_variants_DNase_footprints <- as_tibble(fread("../../results/1a-preproce
 	dplyr::select(seqnames, start, end, width, strand, VariantID, VariantCHROM, VariantPOS, VariantREF, VariantALT)
 
 # load BED
-DNase_footprints_tb <- as_tibble(fread("../../../../Datasets/gene_regulation_binding_catalogs/DNase_digital_genomic_footprinting_consensus/data_cleanup/GRCh37_merged/consensus_footprints_and_motifs_hg38_lift37_GRanges.txt.gz"))
+DNase_footprints_tb <- as_tibble(fread("../../../Datasets/gene_regulation_binding_catalogs/DNase_digital_genomic_footprinting_consensus/data_cleanup/GRCh37_merged/consensus_footprints_and_motifs_hg38_lift37_GRanges.txt.gz"))
 names(DNase_footprints_tb) <- c("seqnames", "start", "end", "width", "strand", "identifier", "mean_signal", "num_samples", "num_fps", "summit", "core_start", "core_end", "motif_clusters")
 
 names(DNase_footprints_tb)[6:13] <- paste("DNase_footprints_orig", names(DNase_footprints_tb)[6:13], sep="_")

@@ -653,7 +653,7 @@ mask &lt;- import(&quot;../../data/PIBv1_MPRA_final_extras/hs37d5_assembly_gaps.
 seqlevels(mask) &lt;- seqlevelsInUse(mask)
 
 # load centromere file
-centromere &lt;- import(&quot;../../../../Datasets/reference_genomes/Homo_sapiens-hg19-GRCh37/UCSC_hg19/hg19.centromere.bed&quot;) %&gt;% filter((seqnames %in% paste0(&quot;chr&quot;, c(1:22)))) %&gt;% 
+centromere &lt;- import(&quot;../../../Datasets/reference_genomes/Homo_sapiens-hg19-GRCh37/UCSC_hg19/hg19.centromere.bed&quot;) %&gt;% filter((seqnames %in% paste0(&quot;chr&quot;, c(1:22)))) %&gt;% 
 seqinfo_fix(&quot;UCSC&quot;, &quot;hg19&quot;)
 seqlevels(centromere) &lt;- seqlevelsInUse(centromere)
 
@@ -1060,7 +1060,7 @@ export(vernot_deserts_nean_and_deni_gr, &quot;../../results/3-visualize_landscap
 # p_karyo_tracts
 # dev.off()</code></pre>
 <pre class="r"><code># load skov et al. introgression
-hg38toHg19 &lt;- import.chain(&quot;../../../../Datasets/reference_genomes/liftOver_chains/hg38ToHg19.over.chain&quot;)
+hg38toHg19 &lt;- import.chain(&quot;../../../Datasets/reference_genomes/liftOver_chains/hg38ToHg19.over.chain&quot;)
 skov_introgressed_fragments_tb &lt;- as_tibble(fread(&quot;../../data/PIBv1_MPRA_final_extras/deserts/Skov_et_al_Supplementary_Dataset_S1_introgression_fragments.txt&quot;))
 skov_introgressed_fragments_tb &lt;- skov_introgressed_fragments_tb %&gt;% dplyr::select(chrom, start, end)
 names(skov_introgressed_fragments_tb) &lt;- c(&quot;seqnames&quot;, &quot;start&quot;, &quot;end&quot;)
@@ -1308,7 +1308,7 @@ dev.off()</code></pre>
 # pdf(&quot;../../results/3-visualize_landscape_of_archaic_introgression_revised/introgressed_reduced_vs_modern_human_genome_eulerr.pdf&quot;, height=4, width=4)
 # venn_two_way(whole_genome_minus_mask, archaic_introgression_all, &quot;Human genome\n(chr1-22 minus mask)&quot;, &quot;Archaic introgression&quot;)
 # dev.off()</code></pre>
-<pre class="r"><code>ucsc_knownGene_abbrev_gr &lt;- readRDS(&quot;../../../../Datasets/gene_annotations/get_canonical_genes/data_cleanup/canonical_gene_lift37_gr.rds&quot;) %&gt;%
+<pre class="r"><code>ucsc_knownGene_abbrev_gr &lt;- readRDS(&quot;../../../Datasets/gene_annotations/get_canonical_genes/data_cleanup/canonical_gene_lift37_gr.rds&quot;) %&gt;%
   mutate(nearest_gene_orig_ensembl_id = tx_ensembl_gene_id, nearest_gene_orig_symbol = tx_hgnc_symbol) %&gt;%
   filter(!is.na(tx_hgnc_symbol)) %&gt;%
   filter(seqnames %in% 1:22) %&gt;%

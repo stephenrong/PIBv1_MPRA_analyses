@@ -14,7 +14,7 @@ source("../shared_functions/seqinfo_fix_change.R")
 adaptive_variants_nearest_gene <- as_tibble(readRDS("../../results/1a-preprocess_PIBv1_MPRA_pilot/adaptive_variants.rds"))[,1:10]
 
 # get gene bodies
-ucsc_knownGene_abbrev <- readRDS("../../../../Datasets/gene_annotations/get_canonical_genes/data_cleanup/canonical_gene_lift37_gr.rds") %>% 
+ucsc_knownGene_abbrev <- readRDS("../../../Datasets/gene_annotations/get_canonical_genes/data_cleanup/canonical_gene_lift37_gr.rds") %>% 
 	mutate(nearest_gene_orig_ensembl_id = tx_ensembl_gene_id, nearest_gene_orig_symbol = tx_hgnc_symbol) %>% 
 	filter(!is.na(tx_hgnc_symbol))
 

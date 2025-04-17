@@ -13,7 +13,7 @@ source("../shared_functions/seqinfo_fix_change.R")
 introgressed_variants_tb <- as_tibble(readRDS("../../results/1a-preprocess_PIBv1_MPRA_final/introgressed_variants.rds"))[,1:10]
 
 # load Roadmap_Epigenomics
-Roadmap_Epigenomics_gene_enhancer_links_tb <- as_tibble(fread(paste0("../../../../Datasets/gene_regulation_gene_enhancer_links/Roadmap_Epigenomics_gene_enhancer_links/data_cleanup/GRCh37_merged/Roadmap_Epigenomics_gene_enhancer_links.txt.gz")))
+Roadmap_Epigenomics_gene_enhancer_links_tb <- as_tibble(fread(paste0("../../../Datasets/gene_regulation_gene_enhancer_links/Roadmap_Epigenomics_gene_enhancer_links/data_cleanup/GRCh37_merged/Roadmap_Epigenomics_gene_enhancer_links.txt.gz")))
 
 # remove ambig TSS
 Roadmap_Epigenomics_gene_enhancer_links_tb <- Roadmap_Epigenomics_gene_enhancer_links_tb %>% 

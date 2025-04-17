@@ -13,7 +13,7 @@ introgressed_variants_ENCODE_cCREs <- as_tibble(fread("../../results/1a-preproce
 	dplyr::select(seqnames, start, end, width, strand, VariantID, VariantCHROM, VariantPOS, VariantREF, VariantALT)
 
 # load BED
-ENCODE_cCREs_tb <- as_tibble(fread("../../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_agnostic/ENCODE_SCREEN_V4_cCREs_lift37/GRCh38-cCREs.V4.lift37.nochr.sort.bed.gz"))
+ENCODE_cCREs_tb <- as_tibble(fread("../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_agnostic/ENCODE_SCREEN_V4_cCREs_lift37/GRCh38-cCREs.V4.lift37.nochr.sort.bed.gz"))
 ENCODE_cCREs_tb <- ENCODE_cCREs_tb[,c(1,2,3,6)]
 ENCODE_cCREs_tb <- unique(ENCODE_cCREs_tb)
 names(ENCODE_cCREs_tb) <- c("seqnames", "start", "end", "ENCODE_cCREs_orig_class")

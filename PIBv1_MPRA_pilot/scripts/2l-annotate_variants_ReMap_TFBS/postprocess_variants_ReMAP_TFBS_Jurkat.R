@@ -13,7 +13,7 @@ adaptive_variants_ReMap_TFBS_Jurkat <- as_tibble(fread("../../results/1a-preproc
 	dplyr::select(seqnames, start, end, width, strand, VariantID, VariantCHROM, VariantPOS, VariantREF, VariantALT)
 
 # load BED
-ReMap_TFBS_Jurkat_tb <- as_tibble(fread("../../../../Datasets/gene_regulation_binding_catalogs/ReMap2022_ChIP_seq_homo_sapiens/data_cleanup/nonredundant_peaks/remap2022_nr_macs2_hg19_v1_0.Jurkat.bed.gz"))
+ReMap_TFBS_Jurkat_tb <- as_tibble(fread("../../../Datasets/gene_regulation_binding_catalogs/ReMap2022_ChIP_seq_homo_sapiens/data_cleanup/nonredundant_peaks/remap2022_nr_macs2_hg19_v1_0.Jurkat.bed.gz"))
 ReMap_TFBS_Jurkat_tb <- ReMap_TFBS_Jurkat_tb[,c(1,2,3,4)]
 ReMap_TFBS_Jurkat_tb <- unique(ReMap_TFBS_Jurkat_tb)
 names(ReMap_TFBS_Jurkat_tb) <- c("seqnames", "start", "end", "ReMap_TFBS_Jurkat_orig_TFs")

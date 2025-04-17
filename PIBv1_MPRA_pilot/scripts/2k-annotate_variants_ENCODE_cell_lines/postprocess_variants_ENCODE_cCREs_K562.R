@@ -13,7 +13,7 @@ adaptive_variants_ENCODE_cCREs_K562 <- as_tibble(fread("../../results/1a-preproc
 	dplyr::select(seqnames, start, end, width, strand, VariantID, VariantCHROM, VariantPOS, VariantREF, VariantALT)
 
 # load BED
-ENCODE_cCREs_K562_tb <- as_tibble(fread("../../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_specific/ENCODE_SCREEN_V4_cCREs_cell_lines_lift37/K562_ENCFF414OGC_ENCFF806YEZ_ENCFF849TDM_ENCFF736UDR.lift37.nochr.sort.bed.gz"))
+ENCODE_cCREs_K562_tb <- as_tibble(fread("../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_specific/ENCODE_SCREEN_V4_cCREs_cell_lines_lift37/K562_ENCFF414OGC_ENCFF806YEZ_ENCFF849TDM_ENCFF736UDR.lift37.nochr.sort.bed.gz"))
 ENCODE_cCREs_K562_tb <- ENCODE_cCREs_K562_tb[,c(1,2,3,10)]
 ENCODE_cCREs_K562_tb <- unique(ENCODE_cCREs_K562_tb)
 names(ENCODE_cCREs_K562_tb) <- c("seqnames", "start", "end", "ENCODE_cCREs_K562_orig_class")

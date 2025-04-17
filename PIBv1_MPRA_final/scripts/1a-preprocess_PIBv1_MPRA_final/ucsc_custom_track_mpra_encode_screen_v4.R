@@ -10,7 +10,7 @@ library(rtracklayer)
 source("../shared_functions/create_ucsc_custom_tracks.R")
 
 # load gr
-mpra_encode_screen_v4_ucsc_custom_track <- as_tibble(fread("../../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_agnostic/ENCODE_SCREEN_V4_cCREs_lift37/GRCh38-cCREs.V4.lift37.nochr.sort.bed.gz", header=FALSE))
+mpra_encode_screen_v4_ucsc_custom_track <- as_tibble(fread("../../../Datasets/gene_regulation_element_catalogs/ENCODE_SCREEN_V4_cCREs/data_cleanup/sample_agnostic/ENCODE_SCREEN_V4_cCREs_lift37/GRCh38-cCREs.V4.lift37.nochr.sort.bed.gz", header=FALSE))
 
 # create bed
 custom_palette = as.vector(paletteer_d("RColorBrewer::Set3"))

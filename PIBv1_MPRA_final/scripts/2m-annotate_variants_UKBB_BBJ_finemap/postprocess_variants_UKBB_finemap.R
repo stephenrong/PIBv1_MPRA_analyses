@@ -12,7 +12,7 @@ library(vcfR)
 introgressed_variants_tb <- as_tibble(fread("../../results/1a-preprocess_PIBv1_MPRA_final/introgressed_variants.txt.gz")) %>% 
 	dplyr::select(seqnames, start, end, width, strand, VariantID, VariantCHROM, VariantPOS, VariantREF, VariantALT)
 
-UKBB_94traits_finemap_pip0.1 <- as_tibble(fread("../../../../Datasets/fine_mapped_regions_gwas/Kanai_et_2021_fine_mapped_ukbb/data_cleanup/UKBB_94traits_finemap_pip0.1.txt.gz"))
+UKBB_94traits_finemap_pip0.1 <- as_tibble(fread("../../../Datasets/fine_mapped_regions_gwas/Kanai_et_2021_fine_mapped_ukbb/data_cleanup/UKBB_94traits_finemap_pip0.1.txt.gz"))
 names(UKBB_94traits_finemap_pip0.1) <- gsub("UKBB", "UKBB_finemap_orig", names(UKBB_94traits_finemap_pip0.1))
 
 # filter variants

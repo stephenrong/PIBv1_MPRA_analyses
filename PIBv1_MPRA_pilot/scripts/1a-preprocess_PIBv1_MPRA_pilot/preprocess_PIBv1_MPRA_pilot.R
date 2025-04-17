@@ -119,7 +119,7 @@ mpra_ccre_variants_tb <- adaptive_variants_tb %>%
 	right_join(mpra_ccre_variants_tb)
 
 # flag liftOver
-hg19ToHg38 <- import.chain("../../../../Datasets/reference_genomes/liftOver_chains/hg19ToHg38.over.chain")
+hg19ToHg38 <- import.chain("../../../Datasets/reference_genomes/liftOver_chains/hg19ToHg38.over.chain")
 
 adaptive_variants_lift38_gr <- adaptive_variants_tb %>% 
 	GRanges() %>% seqinfo_fix("NCBI", "GRCh37") %>% 

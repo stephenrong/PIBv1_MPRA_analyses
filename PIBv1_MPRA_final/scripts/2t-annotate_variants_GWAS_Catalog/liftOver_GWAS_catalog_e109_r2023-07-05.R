@@ -10,8 +10,8 @@ library(rtracklayer)
 source("../shared_functions/seqinfo_fix_change.R")
 
 # load gwas catalog
-gwas_catalog_associations <- as_tibble(fread("../../../../Datasets/associated_regions_gwas/GWAS_Catalog/data_download/e109_r2023-07-05/gwas_catalog_v1.0.2-associations_e109_r2023-07-05.tsv.gz", quote=""))
-gwas_catalog_trait_mappings <- as_tibble(fread("../../../../Datasets/associated_regions_gwas/GWAS_Catalog/data_download/e109_r2023-07-05/gwas_catalog_trait-mappings_r2023-07-05.tsv.gz", quote=""))
+gwas_catalog_associations <- as_tibble(fread("../../../Datasets/associated_regions_gwas/GWAS_Catalog/data_download/e109_r2023-07-05/gwas_catalog_v1.0.2-associations_e109_r2023-07-05.tsv.gz", quote=""))
+gwas_catalog_trait_mappings <- as_tibble(fread("../../../Datasets/associated_regions_gwas/GWAS_Catalog/data_download/e109_r2023-07-05/gwas_catalog_trait-mappings_r2023-07-05.tsv.gz", quote=""))
 
 gwas_catalog_associations_mapped <- gwas_catalog_associations %>% 
 	filter(CHR_POS != "") %>%  # must have a chromosomal position
@@ -30,7 +30,7 @@ gwas_catalog_associations_mapped <- GRanges(gwas_catalog_associations_mapped) %>
 	seqinfo_fix("NCBI", "GRCh38") %>% sort()
 
 # liftOver to hg19
-hg38toHg19 <- import.chain("../../../../Datasets/reference_genomes/liftOver_chains/hg38ToHg19.over.chain")
+hg38toHg19 <- import.chain("../../../Datasets/reference_genomes/liftOver_chains/hg38ToHg19.over.chain")
 
 gwas_catalog_associations_mapped_lift37 <- gwas_catalog_associations_mapped %>% 
 	seqinfo_fix("UCSC", "hg38") %>% 
