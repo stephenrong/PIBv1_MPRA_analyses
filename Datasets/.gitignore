@@ -1,0 +1,11 @@
+disease_annotations
+fine_mapped_regions_gwas
+gene_annotations
+gene_regulation_binding_catalogs
+gene_regulation_element_catalogs
+gene_regulation_gene_enhancer_links
+human_popgen_genomes
+phylo_conservation
+reference_genomes
+variant_effect_predictions
+where_to_get_large_files_needed_to_rerun_scripts.txt
